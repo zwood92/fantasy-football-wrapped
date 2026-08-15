@@ -33,14 +33,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { LockKeyhole, X } from "@lucide/vue";
+import { LockKeyhole, X, Flame } from "@lucide/vue";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Skeleton } from "@/components/ui/skeleton";
 import TradeDatabase from "./TradeDatabase.vue";
 import TradeFinder from "./TradeFinder.vue";
+import TradeCalculatorWidget from "./TradeCalculatorWidget.vue";
 import TradeAssetDialog from "./TradeAssetDialog.vue";
 import TradePlayerRankBadges from "./TradePlayerRankBadges.vue";
+import TrendingPlayersRadar from "../roster_management/TrendingPlayersRadar.vue";
 import { loadDemoTradeValues } from "@/data/demo/loaders";
+
 
 type TradeLabPlayer = TradeBuilderRoster["players"][number] & {
   tradeValue?: number;
@@ -100,7 +102,15 @@ const draggedPlayer = ref<{ playerId: string; fromTeam: "A" | "B" } | null>(
 );
 const isMobile = ref(false);
 const activeMode = ref(
-  route.query.tradeMode === "finder" ? "finder" : "builder"
+  route.query.tradeMode === "finder"
+    ? "finder"
+    : route.query.tradeMode === "calculator"
+      ? "calculator"
+      : route.query.tradeMode === "database"
+        ? "database"
+        : route.query.tradeMode === "radar" || route.query.tradeMode === "trending"
+          ? "radar"
+          : "builder"
 );
 const requestedPlayerId = computed(() => {
   const value = route.query.tradePlayerId;
@@ -779,6 +789,20 @@ const openTradeSuggestion = (suggestion: TradeSuggestion) => {
   activeMode.value = "builder";
 };
 
+const openTradeInBuilder = (payload: {
+  teamAId: number;
+  teamBId: number;
+  teamASends: string[];
+  teamBSends: string[];
+}) => {
+  selectedTeamAId.value = payload.teamAId;
+  selectedTeamBId.value = payload.teamBId;
+  resetTrade();
+  teamASends.value = [...payload.teamASends];
+  teamBSends.value = [...payload.teamBSends];
+  activeMode.value = "builder";
+};
+
 watch(
   [
     () => store.currentLeagueId,
@@ -872,7 +896,12 @@ onBeforeUnmount(() => {
         <Tabs v-model="activeMode">
           <TabsList>
             <TabsTrigger value="builder">Builder</TabsTrigger>
+            <TabsTrigger value="calculator">Calculator</TabsTrigger>
             <TabsTrigger value="database">Database</TabsTrigger>
+            <TabsTrigger value="radar" class="gap-1">
+              <Flame class="w-3.5 h-3.5 text-emerald-500" />
+              Wire Radar
+            </TabsTrigger>
             <TabsTrigger value="finder" class="gap-1.5">
               Finder
               <LockKeyhole
@@ -886,6 +915,24 @@ onBeforeUnmount(() => {
       </div>
     </div>
     <TradeDatabase v-if="activeMode === 'database'" class="mt-4" />
+    <TrendingPlayersRadar
+      v-else-if="activeMode === 'radar'"
+      class="mt-4"
+      :table-data="props.tableData"
+    />
+    <TradeCalculatorWidget
+      v-else-if="activeMode === 'calculator'"
+      class="mt-4"
+      :rosters="rosters"
+      :table-data="props.tableData"
+      :dynasty-pick-assets="dynastyPickAssets"
+      :valuation-mode="valuationMode"
+      :initial-team-a-id="selectedTeamAId"
+      :initial-team-b-id="selectedTeamBId"
+      :initial-team-a-sends="teamASends"
+      :initial-team-b-sends="teamBSends"
+      @open-builder="openTradeInBuilder"
+    />
     <TradeFinder
       v-else-if="activeMode === 'finder'"
       :rosters="rosters"

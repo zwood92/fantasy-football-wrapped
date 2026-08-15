@@ -21,6 +21,7 @@ import {
   type DemoLeagueFixtures,
   type DemoRosterManagementFixtures,
 } from "@/data/demo/loaders";
+import PlayerAvatar from "@/components/shared/PlayerAvatar.vue";
 
 const store = useStore();
 type TradePick = { owner_id: number; season: string; round: number };
@@ -368,26 +369,34 @@ watch(
                   : 'text-base'
               "
             >
-              <div v-for="index in trade.team1.players.length" class="mt-1.5">
-                <p class="text-sm font-medium">
-                  {{ trade.team1.players[index - 1] }}
-                </p>
-                <div class="flex mt-1">
-                  <span
-                    v-if="trade.team1.value[index - 1]"
-                    :class="[getValueColor(trade.team1.value[index - 1])]"
-                    class="text-xs me-2 px-2.5 py-1 rounded-full"
-                    >{{
-                      roundToOneDecimal(trade.team1.value[index - 1] ?? 0)
-                    }}</span
-                  >
-                  <p class="mt-1 text-xs text-muted-foreground">
-                    {{
-                      trade.team1.value[index - 1]
-                        ? getRatingLabel(trade.team1.value[index - 1])
-                        : ""
-                    }}
+              <div v-for="index in trade.team1.players.length" class="flex items-start gap-2 mt-2">
+                <PlayerAvatar
+                  :player-id="trade.team1.playerIds?.[index - 1]"
+                  :name="trade.team1.players[index - 1]"
+                  size="sm"
+                  class="mt-0.5 shrink-0"
+                />
+                <div class="min-w-0">
+                  <p class="text-sm font-medium truncate">
+                    {{ trade.team1.players[index - 1] }}
                   </p>
+                  <div class="flex items-center mt-1">
+                    <span
+                      v-if="trade.team1.value[index - 1]"
+                      :class="[getValueColor(trade.team1.value[index - 1])]"
+                      class="text-xs me-2 px-2.5 py-0.5 rounded-full"
+                      >{{
+                        roundToOneDecimal(trade.team1.value[index - 1] ?? 0)
+                      }}</span
+                    >
+                    <p class="text-xs text-muted-foreground">
+                      {{
+                        trade.team1.value[index - 1]
+                          ? getRatingLabel(trade.team1.value[index - 1])
+                          : ""
+                      }}
+                    </p>
+                  </div>
                 </div>
               </div>
               <p
@@ -415,26 +424,34 @@ watch(
                   : 'text-base'
               "
             >
-              <div v-for="index in trade.team2.players.length" class="mt-1.5">
-                <p class="text-sm font-medium">
-                  {{ trade.team2.players[index - 1] }}
-                </p>
-                <div class="flex mt-1">
-                  <span
-                    v-if="trade.team2.value[index - 1]"
-                    :class="[getValueColor(trade.team2.value[index - 1])]"
-                    class="text-xs me-2 px-2.5 py-1 rounded-full"
-                    >{{
-                      roundToOneDecimal(trade.team2.value[index - 1] ?? 0)
-                    }}</span
-                  >
-                  <p class="mt-1 text-xs text-muted-foreground">
-                    {{
-                      trade.team2.value[index - 1]
-                        ? getRatingLabel(trade.team2.value[index - 1])
-                        : ""
-                    }}
+              <div v-for="index in trade.team2.players.length" class="flex items-start gap-2 mt-2">
+                <PlayerAvatar
+                  :player-id="trade.team2.playerIds?.[index - 1]"
+                  :name="trade.team2.players[index - 1]"
+                  size="sm"
+                  class="mt-0.5 shrink-0"
+                />
+                <div class="min-w-0">
+                  <p class="text-sm font-medium truncate">
+                    {{ trade.team2.players[index - 1] }}
                   </p>
+                  <div class="flex items-center mt-1">
+                    <span
+                      v-if="trade.team2.value[index - 1]"
+                      :class="[getValueColor(trade.team2.value[index - 1])]"
+                      class="text-xs me-2 px-2.5 py-0.5 rounded-full"
+                      >{{
+                        roundToOneDecimal(trade.team2.value[index - 1] ?? 0)
+                      }}</span
+                    >
+                    <p class="text-xs text-muted-foreground">
+                      {{
+                        trade.team2.value[index - 1]
+                          ? getRatingLabel(trade.team2.value[index - 1])
+                          : ""
+                      }}
+                    </p>
+                  </div>
                 </div>
               </div>
               <p

@@ -26,6 +26,7 @@ import {
 } from "@/lib/analytics";
 import { usePaywallViewTracking } from "@/composables/usePaywallViewTracking";
 import { useStore } from "@/store/store";
+import PlayerAvatar from "@/components/shared/PlayerAvatar.vue";
 
 const props = defineProps<{
   rosters: Array<{ id: number; managerName: string }>;
@@ -509,21 +510,12 @@ const copySuggestion = async (suggestion: TradeSuggestion) => {
                     :key="player.playerId"
                     class="flex items-center min-w-0 gap-2"
                   >
-                    <img
-                      v-if="player.position !== 'DEF'"
-                      class="object-cover rounded-full size-8 shrink-0 bg-muted"
-                      :src="`https://sleepercdn.com/content/nfl/players/thumb/${player.playerId}.jpg`"
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                    />
-                    <img
-                      v-else
-                      class="object-contain p-1 rounded-full size-8 shrink-0 bg-background"
-                      :src="`https://sleepercdn.com/images/team_logos/nfl/${player.playerId.toLowerCase()}.png`"
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
+                    <PlayerAvatar
+                      :player-id="player.playerId"
+                      :name="player.name"
+                      :team="player.team"
+                      :position="player.position"
+                      size="sm"
                     />
                     <div class="min-w-0">
                       <p class="text-sm font-medium leading-tight truncate">
@@ -567,21 +559,12 @@ const copySuggestion = async (suggestion: TradeSuggestion) => {
                     :key="player.playerId"
                     class="flex items-center min-w-0 gap-2"
                   >
-                    <img
-                      v-if="player.position !== 'DEF'"
-                      class="object-cover rounded-full size-8 shrink-0 bg-muted"
-                      :src="`https://sleepercdn.com/content/nfl/players/thumb/${player.playerId}.jpg`"
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                    />
-                    <img
-                      v-else
-                      class="object-contain p-1 rounded-full size-8 shrink-0 bg-background"
-                      :src="`https://sleepercdn.com/images/team_logos/nfl/${player.playerId.toLowerCase()}.png`"
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
+                    <PlayerAvatar
+                      :player-id="player.playerId"
+                      :name="player.name"
+                      :team="player.team"
+                      :position="player.position"
+                      size="sm"
                     />
                     <div class="min-w-0">
                       <p class="text-sm font-medium leading-tight truncate">

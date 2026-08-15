@@ -22,6 +22,7 @@ import {
   buildTradeValueExplanation,
   getTradeValueTierLabel,
 } from "@/lib/tradeValueExplanation";
+import PlayerAvatar from "@/components/shared/PlayerAvatar.vue";
 
 const props = defineProps<{
   rosters: TradeFinderRoster[];
@@ -427,17 +428,12 @@ const getValueExplanation = (player: TradeFinderPlayer) =>
                     </td>
                     <td class="px-4 py-3">
                       <div class="flex items-center gap-3">
-                        <img
-                          v-if="player.position !== 'DEF'"
-                          class="object-cover rounded-full size-9"
-                          :src="`https://sleepercdn.com/content/nfl/players/thumb/${player.playerId}.jpg`"
-                          alt=""
-                        />
-                        <img
-                          v-else
-                          class="object-contain rounded-full size-9"
-                          :src="`https://sleepercdn.com/images/team_logos/nfl/${player.playerId.toLowerCase()}.png`"
-                          alt=""
+                        <PlayerAvatar
+                          :player-id="player.playerId"
+                          :name="player.name || `${player.team} Defense`"
+                          :team="player.team"
+                          :position="player.position"
+                          size="md"
                         />
                         <div>
                           <p class="font-medium">

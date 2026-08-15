@@ -10,8 +10,15 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import ScrollableTableCard from "../layout/ScrollableTableCard.vue";
+import TeamAnalysisModal from "../team_analysis/TeamAnalysisModal.vue";
+import ManagerAvatar from "@/components/shared/ManagerAvatar.vue";
+import { Activity } from "@lucide/vue";
+
 const store = useStore();
 const tableOrder = ref("points");
+const isAnalysisOpen = ref(false);
+const selectedTeamForAnalysis = ref<TableDataType | null>(null);
+
 const props = defineProps<{
   tableData: TableDataType[];
 }>();
@@ -61,7 +68,13 @@ const listPadding = computed(() => {
   }
   return "py-2.5";
 });
+
+const openTeamAnalysis = (team: TableDataType) => {
+  selectedTeamForAnalysis.value = team;
+  isAnalysisOpen.value = true;
+};
 </script>
+
 <template>
   <ScrollableTableCard label="Roster management standings">
     <TooltipProvider>
@@ -154,7 +167,7 @@ const listPadding = computed(() => {
             </th>
             <th
               scope="col"
-              class="py-0 pl-2 pr-3 sm:py-3 lg:pr-0"
+              class="py-0 pl-2 pr-3 sm:py-3"
               :aria-sort="tableOrder === 'efficiency' ? 'descending' : 'none'"
             >
               <Tooltip>
@@ -190,27 +203,48 @@ const listPadding = computed(() => {
                 </TooltipContent>
               </Tooltip>
             </th>
+            <th
+              scope="col"
+              class="py-0 px-3 sm:py-3 text-right uppercase text-[11px]"
+            >
+              Analysis
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in tableData" :key="index" class="border-b">
+          <tr
+            v-for="(item, index) in tableData"
+            :key="index"
+            class="border-b hover:bg-muted/40 transition-colors group"
+          >
             <th
               scope="row"
               :class="listPadding"
-              class="max-w-56 truncate whitespace-nowrap px-4 font-medium sm:px-6"
+              class="max-w-56 truncate whitespace-nowrap px-4 font-medium sm:px-6 cursor-pointer group-hover:text-primary transition-colors"
+              @click="openTeamAnalysis(item)"
             >
-              {{
-                store.showUsernames
-                  ? item.username
-                    ? item.username
-                    : "Ghost Roster"
-                  : item.name
-                    ? item.name
-                    : "Ghost Roster"
-              }}
+              <div class="flex items-center gap-2.5">
+                <ManagerAvatar
+                  :src="item.avatarImg"
+                  :alt="store.showUsernames ? (item.username || item.name) : (item.name || item.username)"
+                  class="size-6 shrink-0 rounded-full"
+                />
+                <span class="truncate">
+                  {{
+                    store.showUsernames
+                      ? item.username
+                        ? item.username
+                        : "Ghost Roster"
+                      : item.name
+                        ? item.name
+                        : "Ghost Roster"
+                  }}
+                </span>
+              </div>
             </th>
             <td
-              class="py-2 pl-1 pr-3"
+              class="py-2 pl-1 pr-3 cursor-pointer"
+              @click="openTeamAnalysis(item)"
               :class="{
                 'text-primary font-semibold': item.pointsFor === mostPoints,
                 'text-destructive font-semibold': item.pointsFor === minPoints,
@@ -219,7 +253,8 @@ const listPadding = computed(() => {
               {{ item.pointsFor }}
             </td>
             <td
-              class="py-2 pl-1 pr-3"
+              class="py-2 pl-1 pr-3 cursor-pointer"
+              @click="openTeamAnalysis(item)"
               :class="{
                 'text-primary font-semibold':
                   item.potentialPoints === mostPotentialPoints,
@@ -230,7 +265,8 @@ const listPadding = computed(() => {
               {{ item.potentialPoints }}
             </td>
             <td
-              class="py-2 pl-2.5 pr-3"
+              class="py-2 pl-2.5 pr-3 cursor-pointer"
+              @click="openTeamAnalysis(item)"
               :class="{
                 'text-primary font-semibold':
                   item.managerEfficiency === highestEfficiency,
@@ -240,9 +276,28 @@ const listPadding = computed(() => {
             >
               {{ (item.managerEfficiency * 100).toFixed(1) }}%
             </td>
+            <td class="py-2 px-3 text-right">
+              <button
+                type="button"
+                @click="openTeamAnalysis(item)"
+                class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-md border bg-background hover:bg-accent text-foreground transition-colors cursor-pointer shadow-2xs"
+                title="Open Team Deep Dive Analysis"
+              >
+                <Activity class="w-3.5 h-3.5 text-primary" />
+                <span class="hidden sm:inline">Deep Dive</span>
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
     </TooltipProvider>
+
+    <!-- Team Deep Dive Modal -->
+    <TeamAnalysisModal
+      v-model:open="isAnalysisOpen"
+      :selected-team="selectedTeamForAnalysis"
+      :all-teams="props.tableData"
+      @select-team="(team) => (selectedTeamForAnalysis = team)"
+    />
   </ScrollableTableCard>
 </template>

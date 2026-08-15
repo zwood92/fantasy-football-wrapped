@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useStore } from "@/store/store";
 import type { TableDataType } from "@/types/types";
 import {
+  generateCalculatedLeaguePlayerValues,
   getTradeValuationMode,
   getTradeValueWeek,
   loadLeaguePlayerValues,
@@ -129,12 +130,28 @@ const fetchPlayerValues = async () => {
       totalPlayers.value = result.totalPlayers;
     }
   } catch (error) {
-    console.error("Unable to load player values:", error);
-    if (currentRequestId === requestId) {
-      rosters.value = [];
-      access.value = "preview";
-      totalPlayers.value = 0;
-      errorMessage.value = "Player values are unavailable right now.";
+    console.warn("Unable to load remote player values, generating calculated values:", error);
+    try {
+      const fallbackResult = await generateCalculatedLeaguePlayerValues({
+        league,
+        tableData: props.tableData,
+        selectedWeek: selectedWeek.value,
+        showUsernames: store.showUsernames,
+        dynastyPerspective: dynastyPerspective.value,
+      });
+      if (currentRequestId === requestId) {
+        rosters.value = fallbackResult.rosters;
+        access.value = fallbackResult.access;
+        totalPlayers.value = fallbackResult.totalPlayers;
+      }
+    } catch (fallbackError) {
+      console.error("Local calculation also failed:", fallbackError);
+      if (currentRequestId === requestId) {
+        rosters.value = [];
+        access.value = "preview";
+        totalPlayers.value = 0;
+        errorMessage.value = "Player values are unavailable right now.";
+      }
     }
   } finally {
     if (currentRequestId === requestId) {

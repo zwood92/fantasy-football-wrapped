@@ -35,6 +35,7 @@ import {
   FlaskConical,
   IdCard,
   ListOrdered,
+  Mic,
 } from "@lucide/vue";
 import { Separator } from "../ui/separator";
 import { useStore } from "../../store/store";
@@ -127,6 +128,7 @@ const featureIcons: Record<LeagueFeature, Component> = {
   Draft: Users,
   "League History": FolderClock,
   "Manager Profiles": IdCard,
+  Podcast: Mic,
   Wrapped: Gift,
   ESPN: ChartColumn,
 };
@@ -147,10 +149,10 @@ const data = computed(() => ({
 
 <template>
   <Sidebar v-bind="props">
-    <SidebarHeader
-      ><SidebarMenu>
+    <SidebarHeader>
+      <SidebarMenu>
         <SidebarMenuItem>
-          <div class="flex items-center ml-2 mt-1.5">
+          <div class="flex items-center ml-2 mt-1.5 cursor-pointer" @click="changeTab('Home')">
             <img
               height="32"
               width="32"
@@ -172,7 +174,7 @@ const data = computed(() => ({
       class="mr-2 mt-2 data-[orientation=vertical]:h-4"
     />
     <SidebarContent>
-      <SidebarGroup v-for="item in data.navMain">
+      <SidebarGroup v-for="item in data.navMain" :key="item.items.length">
         <SidebarGroupContent>
           <SidebarMenu>
             <SidebarMenuItem
@@ -227,6 +229,40 @@ const data = computed(() => ({
         />
         <SidebarGroupContent>
           <SidebarMenu>
+            <SidebarMenuItem>
+              <router-link
+                :to="{ path: '/newsletters', query: defaultRouteQuery }"
+                class="cursor-pointer"
+                @click="RouteTabChange"
+              >
+                <SidebarMenuButton
+                  :is-active="route.path === '/newsletters'"
+                  as-child
+                >
+                  <div>
+                    <Newspaper />
+                    Newsletters Archive
+                  </div>
+                </SidebarMenuButton>
+              </router-link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <router-link
+                :to="{ path: '/podcasts', query: defaultRouteQuery }"
+                class="cursor-pointer"
+                @click="RouteTabChange"
+              >
+                <SidebarMenuButton
+                  :is-active="route.path === '/podcasts'"
+                  as-child
+                >
+                  <div>
+                    <Mic />
+                    Podcasts Archive
+                  </div>
+                </SidebarMenuButton>
+              </router-link>
+            </SidebarMenuItem>
             <SidebarMenuItem>
               <router-link
                 :to="{ path: '/about', query: defaultRouteQuery }"

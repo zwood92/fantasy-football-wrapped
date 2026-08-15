@@ -18,6 +18,7 @@ import {
 } from "@/lib/tradeFinder";
 import { mapWithConcurrency } from "@/lib/async";
 import { isSuperflexLeague } from "@/lib/lineup";
+import { calculatePlayerTradeValue } from "@/lib/tradeCalculatorEngine";
 import type { Player } from "@/types/apiTypes";
 import type { LeagueInfoType, TableDataType } from "@/types/types";
 
@@ -226,6 +227,162 @@ const groupRankingsByRoster = (
   }));
 };
 
+export const generateCalculatedLeaguePlayerValues = async (options: {
+  league: LeagueInfoType;
+  tableData: TableDataType[];
+  selectedWeek: number;
+  showUsernames: boolean;
+  dynastyPerspective?: DynastyPerspective;
+}): Promise<LeaguePlayerValuesResult> => {
+  const request = buildTradeValueRequest(options);
+  const playerIds = [...new Set(request.rosters.flatMap((r) => r.playerIds))];
+  const playerMap = await getPlayersByIdsMap(playerIds);
+  const dynasty = isDynastyLeague(options.league);
+  const superflex = isSuperflexLeague(options.league.rosterPositions);
+  const idpPositions = new Set(["DB", "DL", "LB", "CB", "DE", "DT", "NT", "S"]);
+
+  const playerStatsList = await mapWithConcurrency(
+    playerIds,
+    TRADE_BUILDER_RANKING_CONCURRENCY,
+    async (playerId) => {
+      const player = playerMap.get(playerId);
+      if (dynasty) {
+        const projection = await getDraftProjections(
+          playerId,
+          options.league.season,
+          options.league.scoringType,
+          "Dynasty",
+          superflex,
+          idpPositions.has(player?.position?.toUpperCase() ?? "")
+        );
+        return {
+          playerId,
+          dynastyAdp: projection.adp,
+          projectedPoints: 0,
+          statsRank: 0,
+          statsOverallRank: 0,
+        };
+      }
+      const stats = await getStats(
+        playerId,
+        options.league.season,
+        options.league.scoringType
+      );
+      return {
+        playerId,
+        dynastyAdp: null,
+        projectedPoints: Number(stats?.points || 0),
+        statsRank: Number(stats?.rank || 0),
+        statsOverallRank: Number(stats?.overallRank || 0),
+      };
+    }
+  );
+
+  const statsByPlayerId = new Map(
+    playerStatsList.map((entry) => [entry.playerId, entry])
+  );
+
+  const playersByPos = new Map<
+    string,
+    Array<{ playerId: string; points: number; adp: number | null }>
+  >();
+  playerIds.forEach((playerId) => {
+    const player = playerMap.get(playerId);
+    if (!player) return;
+    const pos = (player.position || "WR").toUpperCase();
+    const stats = statsByPlayerId.get(playerId);
+    if (!playersByPos.has(pos)) playersByPos.set(pos, []);
+    playersByPos.get(pos)!.push({
+      playerId,
+      points: stats?.projectedPoints || 0,
+      adp: stats?.dynastyAdp ?? null,
+    });
+  });
+
+  const replacementPointsByPos = new Map<string, number>();
+  playersByPos.forEach((list, pos) => {
+    list.sort((a, b) => b.points - a.points);
+    const baselineIndex = Math.min(
+      list.length - 1,
+      Math.max(0, Math.floor(list.length * 0.7))
+    );
+    replacementPointsByPos.set(pos, list[baselineIndex]?.points || 50);
+  });
+
+  const rankings: TradeFinderPlayer[] = playerIds
+    .map((playerId) => {
+      const player = playerMap.get(playerId);
+      if (!player) return null;
+      const pos = (player.position || "WR").toUpperCase();
+      const stats = statsByPlayerId.get(playerId);
+      const projectedPoints = stats?.projectedPoints || 0;
+      const replacementPoints = replacementPointsByPos.get(pos) || 50;
+      const vorp = projectedPoints - replacementPoints;
+      const dynastyAdp = stats?.dynastyAdp ?? null;
+
+      const tradeValue = calculatePlayerTradeValue(
+        {
+          playerId,
+          position: pos,
+          team: player.team,
+          projectedPoints,
+          replacementPoints,
+          vorp,
+          dynastyAdp,
+          positionRank: stats?.statsRank,
+        },
+        {
+          seasonType: dynasty ? "dynasty" : "redraft",
+          valuationMode: dynasty ? "dynasty" : "ros projection",
+          isSuperflex: superflex,
+          scoringType: options.league.scoringType,
+          currentSeason:
+            Number(options.league.season) || new Date().getFullYear(),
+          dynastyPerspective: options.dynastyPerspective || "balanced",
+        }
+      );
+
+      return {
+        playerId,
+        position: pos,
+        name: player.name || `${player.team} Defense`,
+        team: player.team || "",
+        projectedPoints,
+        replacementPoints,
+        vorp,
+        tradeValue,
+        positionRank: stats?.statsRank || 0,
+        overallRank: stats?.statsOverallRank || 0,
+        dynastyAdp,
+      };
+    })
+    .filter((p): p is TradeFinderPlayer => p !== null);
+
+  rankings.sort((a, b) => {
+    if (dynasty && a.dynastyAdp && b.dynastyAdp) {
+      return a.dynastyAdp - b.dynastyAdp;
+    }
+    return b.tradeValue - a.tradeValue || b.projectedPoints - a.projectedPoints;
+  });
+
+  const posCounters = new Map<string, number>();
+  rankings.forEach((player, index) => {
+    player.overallRank = index + 1;
+    const currentPosCount = (posCounters.get(player.position) || 0) + 1;
+    posCounters.set(player.position, currentPosCount);
+    player.positionRank = currentPosCount;
+  });
+
+  return {
+    access: "premium",
+    previewLimit: rankings.length,
+    totalPlayers: rankings.length,
+    rankings,
+    request,
+    rosters: groupRankingsByRoster(request, rankings),
+  };
+};
+
 export const loadLeaguePlayerValues = async (options: {
   league: LeagueInfoType;
   tableData: TableDataType[];
@@ -234,12 +391,21 @@ export const loadLeaguePlayerValues = async (options: {
   dynastyPerspective?: DynastyPerspective;
 }): Promise<LeaguePlayerValuesResult> => {
   const request = buildTradeValueRequest(options);
-  const response = await getPlayerValues(request);
-  return {
-    ...response,
-    request,
-    rosters: groupRankingsByRoster(request, response.rankings),
-  };
+  try {
+    const response = await getPlayerValues(request);
+    if (response.access === "premium" && response.rankings.length > 0) {
+      return {
+        ...response,
+        request,
+        rosters: groupRankingsByRoster(request, response.rankings),
+      };
+    }
+    // If backend returns preview or empty, fallback with complete local calculations
+    return generateCalculatedLeaguePlayerValues(options);
+  } catch (error) {
+    console.warn("Backend playerValues call failed, generating local calculated player values:", error);
+    return generateCalculatedLeaguePlayerValues(options);
+  }
 };
 
 export type TradeBuilderPlayer = Player & {

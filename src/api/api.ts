@@ -21,7 +21,11 @@ import {
   getTransactions,
   getUsers,
   getWinnersBracket,
+  getTrendingPlayers,
+  type SleeperTrendingPlayer,
 } from "./sleeperApi";
+export { getTrendingPlayers, type SleeperTrendingPlayer };
+
 import { assertOk, parseJson } from "@/lib/http";
 
 export {

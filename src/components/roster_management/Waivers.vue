@@ -7,7 +7,7 @@ import {
   computed,
   ComputedRef,
 } from "vue";
-import { WaiverMove } from "../../types/types.ts";
+import { TableDataType, WaiverMove } from "../../types/types.ts";
 import { getPlayersByIdsMap } from "../../api/api.ts";
 import { getTradeValue } from "../../api/sleeperApi.ts";
 import { getLeagueKey, useStore } from "../../store/store";
@@ -22,6 +22,7 @@ import {
 } from "../ui/select";
 import Separator from "../ui/separator/Separator.vue";
 import Label from "../ui/label/Label.vue";
+import { Badge } from "@/components/ui/badge";
 import {
   getTransactionRatingClass as getValueColor,
   getTransactionRatingLabel as getRatingLabel,
@@ -31,12 +32,21 @@ import {
   loadDemoRosterManagement,
   type DemoLeagueFixtures,
 } from "@/data/demo/loaders";
+import PlayerAvatar from "@/components/shared/PlayerAvatar.vue";
+import TrendingPlayersRadar from "./TrendingPlayersRadar.vue";
+import { Radio, FileText } from "@lucide/vue";
 
 type WaiverData = Record<string | number, WaiverMove[]>;
+
+const props = defineProps<{
+  tableData?: TableDataType[];
+}>();
 
 const store = useStore();
 const rawData = ref<WaiverMove[]>([]);
 const demoLeague = shallowRef<DemoLeagueFixtures | null>(null);
+const waiverViewMode = ref<"trending" | "history">("trending");
+
 
 const loadDemoData = async () => {
   const [league, rosterManagement] = await Promise.all([
@@ -273,17 +283,65 @@ watch(
 );
 </script>
 <template>
-  <div
-    class="flex flex-wrap mb-0 xl:flex-nowrap"
-    :class="{ 'mt-4 xl:mb-4': store.currentTab === 'Roster Management' }"
-  >
-    <Card
+  <div class="space-y-4" :class="{ 'mt-4 xl:mb-4': store.currentTab === 'Roster Management' }">
+    <!-- View Switcher Controls -->
+    <div
       v-if="store.currentTab === 'Roster Management'"
-      class="w-full py-4 pl-4 overflow-auto xl:w-2/3 md:py-6 md:pl-6"
+      class="flex flex-wrap items-center justify-between gap-3"
     >
-      <h1 class="pb-2 text-2xl font-semibold tracking-tight">
-        Waivers & Free Agent Adds
-      </h1>
+      <div class="inline-flex p-1 rounded-lg bg-muted border border-border">
+        <button
+          type="button"
+          @click="waiverViewMode = 'trending'"
+          :class="[
+            'flex items-center gap-1.5 px-3.5 py-1.5 text-xs sm:text-sm font-semibold rounded-md transition-all cursor-pointer',
+            waiverViewMode === 'trending'
+              ? 'bg-background text-foreground shadow-xs'
+              : 'text-muted-foreground hover:text-foreground',
+          ]"
+        >
+          <Radio class="w-4 h-4 text-emerald-500 animate-pulse" />
+          <span>Live Trending Wire</span>
+          <Badge
+            variant="outline"
+            class="ml-1 text-[10px] px-1.5 py-0 border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold"
+          >
+            LIVE
+          </Badge>
+        </button>
+        <button
+          type="button"
+          @click="waiverViewMode = 'history'"
+          :class="[
+            'flex items-center gap-1.5 px-3.5 py-1.5 text-xs sm:text-sm font-semibold rounded-md transition-all cursor-pointer',
+            waiverViewMode === 'history'
+              ? 'bg-background text-foreground shadow-xs'
+              : 'text-muted-foreground hover:text-foreground',
+          ]"
+        >
+          <FileText class="w-4 h-4 text-primary" />
+          <span>League Waiver History</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Trending Wire View -->
+    <div v-if="waiverViewMode === 'trending'">
+      <TrendingPlayersRadar :table-data="props.tableData" />
+    </div>
+
+    <!-- Classic League Waivers History View -->
+    <div
+      v-else
+      class="flex flex-wrap mb-0 xl:flex-nowrap"
+    >
+      <Card
+        class="w-full py-4 pl-4 overflow-auto xl:w-2/3 md:py-6 md:pl-6"
+      >
+        <h1 class="pb-2 text-2xl font-semibold tracking-tight">
+          Waivers & Free Agent Adds
+        </h1>
+
       <p
         class="mt-1 mb-3 text-sm text-muted-foreground max-w-80 sm:max-w-2xl sm:text-base"
       >
@@ -318,19 +376,27 @@ watch(
               v-for="move in currentManagerMoves"
               :key="move.adds + move.week + move.user.username"
             >
-              <div v-if="move.adds && move.status === 'complete'">
-                <p class="text-sm font-medium">
-                  {{ move.adds }} <span v-if="move.bid">(${{ move.bid }})</span>
-                </p>
-                <div class="flex mt-1">
-                  <span
-                    :class="[move.value ? getValueColor(move.value) : '']"
-                    class="text-xs me-2 px-2.5 py-1 rounded-full"
-                    >{{ move.value ? move.value : "N/A" }}</span
-                  >
-                  <p class="mt-1 text-xs text-muted-foreground">
-                    {{ move.value ? getRatingLabel(move.value) : "" }}
+              <div v-if="move.adds && move.status === 'complete'" class="flex items-center gap-2">
+                <PlayerAvatar
+                  :player-id="move.player_id"
+                  :name="move.adds"
+                  :position="move.position"
+                  size="sm"
+                />
+                <div class="min-w-0">
+                  <p class="text-sm font-medium truncate">
+                    {{ move.adds }} <span v-if="move.bid">(${{ move.bid }})</span>
                   </p>
+                  <div class="flex items-center mt-1">
+                    <span
+                      :class="[move.value ? getValueColor(move.value) : '']"
+                      class="text-xs me-2 px-2.5 py-1 rounded-full"
+                      >{{ move.value ? move.value : "N/A" }}</span
+                    >
+                    <p class="text-xs text-muted-foreground">
+                      {{ move.value ? getRatingLabel(move.value) : "" }}
+                    </p>
+                  </div>
                 </div>
               </div>
             </template>
@@ -472,31 +538,13 @@ watch(
         <div class="flex justify-between">
           <div class="flex mb-1">
             <p class="mt-2 mr-2 text-base font-semibold">{{ index + 1 }}.</p>
-            <div class="mt-1 mr-2">
-              <img
-                alt="User avatar"
-                v-if="move.position !== 'DEF'"
-                class="object-cover rounded-full w-14"
-                :src="`https://sleepercdn.com/content/nfl/players/thumb/${move.player_id}.jpg`"
+            <div class="mt-1 mr-2.5">
+              <PlayerAvatar
+                :player-id="move.player_id"
+                :name="move.adds"
+                :position="move.position"
+                size="lg"
               />
-              <img
-                alt="User avatar"
-                v-else-if="move.position === 'DEF'"
-                class="h-10 rounded-full w-14"
-                :src="`https://sleepercdn.com/images/team_logos/nfl/${move.player_id.toLowerCase()}.png`"
-              />
-              <svg
-                v-else
-                class="w-8 h-8"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"
-                />
-              </svg>
             </div>
             <div class="">
               <p class="text-base font-medium">
@@ -592,6 +640,7 @@ watch(
         <span class="sr-only">Loading...</span>
       </div>
     </Card>
+    </div>
   </div>
 </template>
 <style scoped>

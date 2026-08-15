@@ -64,6 +64,10 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    host: "0.0.0.0",
+    port: 3000,
+  },
   test: {
     exclude: [...configDefaults.exclude, "e2e/**"],
   },

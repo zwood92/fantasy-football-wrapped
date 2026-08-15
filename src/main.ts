@@ -20,6 +20,8 @@ import {
 } from "./lib/analytics";
 
 const Home = () => import("./views/Home.vue");
+const NewslettersView = () => import("./views/NewslettersView.vue");
+const PodcastsView = () => import("./views/PodcastsView.vue");
 const About = () => import("./views/About.vue");
 const ChangelogPage = () => import("./views/Changelog.vue");
 const PrivacyPolicy = () => import("./views/PrivacyPolicy.vue");
@@ -54,6 +56,20 @@ const routes = [
     path: "/",
     component: Home,
     meta: defaultMeta,
+  },
+  {
+    path: "/wrapped",
+    redirect: "/",
+  },
+  {
+    path: "/newsletters",
+    component: NewslettersView,
+    meta: { title: "Weekly Newsletters | League Hub" },
+  },
+  {
+    path: "/podcasts",
+    component: PodcastsView,
+    meta: { title: "Weekly Podcasts | League Hub" },
   },
   {
     path: "/sleeper-league-analyzer",

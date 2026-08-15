@@ -5,11 +5,12 @@ import { Button } from "../ui/button";
 import { useRoute } from "vue-router";
 
 import { useStore } from "../../store/store";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { leaguePersistenceStatus } from "@/lib/leagueStorage";
 
 const store = useStore();
 const route = useRoute();
+const addLeagueDialogOpen = ref(false);
 
 const leagues = computed(() => {
   return store.leagueInfo;
@@ -52,12 +53,13 @@ const showLeagueSwitcher = computed(
         v-show="!showLeagueSwitcher && showAddLeagueButton"
         class="flex w-full min-w-0 items-center gap-2"
       >
-        <Dialog>
+        <Dialog v-model:open="addLeagueDialogOpen">
           <template #trigger>
             <Button
               type="button"
               size="sm"
               class="ml-1.5 shrink-0 text-sm font-medium"
+              @click="addLeagueDialogOpen = true"
             >
               Add League
             </Button>

@@ -230,10 +230,12 @@ const shareLeague = () => {
   toast.success("Link copied to clipboard!");
 };
 
-const openAddLeagueDialog = async () => {
+const openAddLeagueDialog = (e?: Event) => {
+  e?.preventDefault?.();
   leagueMenuOpen.value = false;
-  await nextTick();
-  addLeagueOpen.value = true;
+  setTimeout(() => {
+    addLeagueOpen.value = true;
+  }, 100);
 };
 </script>
 
@@ -290,7 +292,7 @@ const openAddLeagueDialog = async () => {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              @select="openAddLeagueDialog"
+              @select.prevent="openAddLeagueDialog"
               class="flex items-start cursor-pointer"
             >
               <div

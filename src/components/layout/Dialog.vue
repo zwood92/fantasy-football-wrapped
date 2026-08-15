@@ -57,7 +57,7 @@ const handleSubmit = async () => {
       <DialogHeader>
         <DialogTitle>Add League</DialogTitle>
         <DialogDescription>
-          <p>Select your platform then enter your league ID or username.</p>
+          Select your platform then enter your league ID or username.
         </DialogDescription>
       </DialogHeader>
       <div class="space-y-3">

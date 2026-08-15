@@ -98,6 +98,9 @@ const FakeWrapped = defineAsyncComponent(
   () => import("../wrapped/FakeWrapped.vue")
 );
 const Intro = defineAsyncComponent(() => import("../home/Intro.vue"));
+const PodcastHub = defineAsyncComponent(
+  () => import("../podcast/PodcastHub.vue")
+);
 
 const ScheduleSimulator = defineAsyncComponent(
   () => import("../schedule_simulator/ScheduleSimulator.vue")
@@ -739,11 +742,14 @@ const getTeamName = (tableDataItem: TableDataType) => {
       </div>
       <TransactionsChart class="mt-4" />
       <Trades class="mt-4" />
-      <Waivers class="mt-4" />
+      <Waivers class="mt-4" :table-data="tableData" />
     </div>
     <div class="w-full" v-if="store.currentTab === 'Playoffs'">
       <PlayoffPercentages :propsTableData="sortedPropsTableData" class="mt-4" />
       <Playoffs class="mb-4" :tableData="tableData" />
+    </div>
+    <div class="w-full" v-if="isActiveFeature('Podcast')">
+      <PodcastHub class="mt-4" />
     </div>
     <div
       v-if="isActiveFeature('Weekly Report')"
@@ -803,7 +809,7 @@ const getTeamName = (tableDataItem: TableDataType) => {
       <Intro>
         <template #header>
           <TransactionsChart />
-          <Waivers class="text-left" />
+          <Waivers class="text-left" :table-data="tableData" />
           <Projections />
           <ExpectedWinsChart :tableData="tableData" />
           <PowerRankingData

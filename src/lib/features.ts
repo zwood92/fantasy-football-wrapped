@@ -13,6 +13,7 @@ export const leagueFeatures = [
   { id: "Draft" },
   { id: "League History" },
   { id: "Manager Profiles", unavailableForGuillotine: true },
+  { id: "Podcast", unavailableForGuillotine: true },
   { id: "Wrapped" },
   { id: "ESPN", hiddenFromNavigation: true },
 ] as const;

@@ -847,4 +847,37 @@ export const getCurrentLeagueState = async (signal?: AbortSignal) => {
   };
 };
 
+export type SleeperTrendingPlayer = {
+  player_id: string;
+  count: number;
+};
+
+export const getTrendingPlayers = async (
+  type: "add" | "drop",
+  lookbackHours: number = 24,
+  limit: number = 25,
+  signal?: AbortSignal
+): Promise<SleeperTrendingPlayer[]> => {
+  try {
+    const response = await fetchWithRetry(
+      `https://api.sleeper.app/v1/players/nfl/trending/${type}?lookback_hours=${lookbackHours}&limit=${limit}`,
+      { signal }
+    );
+    assertOk(response, "Trending players request");
+    const trending = await parseJson<SleeperTrendingPlayer[]>(
+      response,
+      "Trending players"
+    );
+    return Array.isArray(trending)
+      ? trending.filter(
+          (item) => Boolean(item?.player_id) && typeof item?.count === "number"
+        )
+      : [];
+  } catch (error) {
+    if (isRequestCancellation(error)) throw error;
+    console.error("Error fetching trending players:", error);
+    return [];
+  }
+};
+
 export type { Player };
