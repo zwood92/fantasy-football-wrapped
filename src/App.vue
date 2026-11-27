@@ -24,6 +24,10 @@ import {
   createFeatureViewTracker,
   getLeagueAnalyticsProperties,
 } from "@/lib/analytics";
+import {
+  getFeatureFromViewSlug,
+  getViewSlugForFeature,
+} from "@/lib/features";
 
 const router = useRouter();
 const route = useRoute();
@@ -102,6 +106,45 @@ watch(
         toast.error("Error fetching data. Please try refreshing the page.");
       }
     }
+  }
+);
+
+watch(
+  () => route.query.view,
+  (viewParam) => {
+    if (route.path !== "/") return;
+    const resolved = getFeatureFromViewSlug(viewParam);
+    if (resolved && resolved !== store.currentTab) {
+      store.currentTab = resolved;
+      localStorage.setItem("currentTab", resolved);
+    }
+  },
+  { immediate: true }
+);
+
+watch(
+  () => store.currentTab,
+  (tab) => {
+    if (route.path !== "/") return;
+    const currentView = Array.isArray(route.query.view)
+      ? route.query.view[0]
+      : route.query.view;
+    // Keep bare ?leagueId=X clean when on default Home/Standings unless ?view=standings was explicitly requested
+    const isDefaultUnparameterized =
+      !tab ||
+      tab === "Home" ||
+      (tab === "Standings" && currentView !== "standings");
+    const nextView = isDefaultUnparameterized
+      ? undefined
+      : getViewSlugForFeature(tab);
+    if ((currentView ?? undefined) === nextView) return;
+    const nextQuery = { ...route.query };
+    if (nextView) {
+      nextQuery.view = nextView;
+    } else {
+      delete nextQuery.view;
+    }
+    void router.replace({ query: nextQuery });
   }
 );
 

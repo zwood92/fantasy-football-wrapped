@@ -120,8 +120,10 @@ describe("aiAnalysisApi", () => {
       expect(podcast.leagueName).toBe("Premier League");
       expect(podcast.highlights.some((h) => h.includes("Alpha Dogs") && h.includes("165.4"))).toBe(true);
       expect(podcast.highlights.some((h) => h.includes("Beta Cats") && h.includes("82.1"))).toBe(true);
-      expect(podcast.segments.length).toBe(6);
-      expect(podcast.script.length).toBe(6);
+      expect(podcast.segments.length).toBeGreaterThanOrEqual(20);
+      expect(podcast.script.length).toBe(podcast.segments.length);
+      expect(podcast.wordCount).toBeGreaterThanOrEqual(1000);
+      expect(podcast.estimatedDurationMinutes).toBeGreaterThanOrEqual(7);
 
       const speakers = podcast.segments.map((s) => s.speaker);
       expect(speakers).toContain("Analytical Guru");
@@ -133,7 +135,8 @@ describe("aiAnalysisApi", () => {
       const podcast = createClientFallbackPodcast();
       expect(podcast.leagueName).toBe("The League");
       expect(podcast.week).toBe(10);
-      expect(podcast.segments.length).toBe(6);
+      expect(podcast.segments.length).toBeGreaterThanOrEqual(20);
+      expect(podcast.acts?.length).toBe(6);
     });
   });
 

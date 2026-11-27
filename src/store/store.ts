@@ -20,6 +20,15 @@ import {
 const isHiddenLeagueFeatures = (value: unknown): value is LeagueFeature[] =>
   Array.isArray(value) && value.every(isCustomizableLeagueFeature);
 
+const isSelectedRosterMap = (
+  value: unknown
+): value is Record<string, number> => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  return Object.values(value as Record<string, unknown>).every(
+    (entry) => typeof entry === "number" && Number.isFinite(entry)
+  );
+};
+
 export const getLeagueKey = ({
   leagueId,
   platform,
@@ -50,6 +59,11 @@ export const useStore = defineStore("main", {
       [],
       { isValid: isHiddenLeagueFeatures }
     ),
+    selectedRosterIdByLeague: getParsedStorageItem<Record<string, number>>(
+      "selectedRosterIdByLeague",
+      {},
+      { isValid: isSelectedRosterMap }
+    ),
   }),
   getters: {
     leagueIds: (state) =>
@@ -58,6 +72,31 @@ export const useStore = defineStore("main", {
       state.leagueInfo.find(
         (league) => getLeagueKey(league) === state.currentLeagueId
       ) as LeagueInfoType,
+    currentSelectedRosterId(): number | null {
+      const league = this.currentLeague;
+      if (!league || !league.rosters?.length) return null;
+      const key = getLeagueKey(league);
+      const savedRosterId = this.selectedRosterIdByLeague[key];
+      if (
+        typeof savedRosterId === "number" &&
+        league.rosters.some((roster) => roster.rosterId === savedRosterId)
+      ) {
+        return savedRosterId;
+      }
+      if (this.username) {
+        const normalizedUsername = this.username.trim().toLowerCase();
+        const matchedUser = league.users?.find(
+          (user) => user.username?.toLowerCase() === normalizedUsername
+        );
+        if (matchedUser) {
+          const matchedRoster = league.rosters.find(
+            (roster) => roster.id === matchedUser.id
+          );
+          if (matchedRoster) return matchedRoster.rosterId;
+        }
+      }
+      return league.rosters[0]?.rosterId ?? null;
+    },
   },
   actions: {
     findLeague(leagueId: string) {
@@ -273,6 +312,18 @@ export const useStore = defineStore("main", {
     },
     updateCurrentLeagueId(payload: string) {
       this.currentLeagueId = payload;
+    },
+    setSelectedRosterId(rosterId: number, leagueKey?: string) {
+      const key = leagueKey ?? this.currentLeagueId;
+      if (!key || !Number.isFinite(rosterId)) return;
+      this.selectedRosterIdByLeague = {
+        ...this.selectedRosterIdByLeague,
+        [key]: rosterId,
+      };
+      localStorage.setItem(
+        "selectedRosterIdByLeague",
+        JSON.stringify(this.selectedRosterIdByLeague)
+      );
     },
     updateShowLeaguesList(payload: boolean) {
       this.showLeaguesList = payload;

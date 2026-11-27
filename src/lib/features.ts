@@ -1,24 +1,68 @@
+export type LeagueFeatureGroup =
+  | "Command Center"
+  | "League Analysis"
+  | "My Team & Tools"
+  | "History & Media";
+
+export const leagueFeatureGroups: readonly LeagueFeatureGroup[] = [
+  "Command Center",
+  "League Analysis",
+  "My Team & Tools",
+  "History & Media",
+] as const;
+
 export const leagueFeatures = [
-  { id: "Home" },
-  { id: "Standings" },
-  { id: "Power Rankings" },
-  { id: "Expected Wins" },
-  { id: "Roster Management" },
-  { id: "Weekly Report", unavailableForGuillotine: true },
-  { id: "Playoffs" },
-  { id: "Player Values" },
-  { id: "Trade Lab" },
-  { id: "Start/Sit" },
-  { id: "Season Forecast", unavailableForGuillotine: true },
-  { id: "Draft" },
-  { id: "League History" },
-  { id: "Manager Profiles", unavailableForGuillotine: true },
-  { id: "Podcast", unavailableForGuillotine: true },
-  { id: "Wrapped" },
-  { id: "ESPN", hiddenFromNavigation: true },
+  { id: "Home", slug: "home", group: "Command Center" },
+  { id: "Dashboard", slug: "dashboard", group: "Command Center" },
+  { id: "Start/Sit", slug: "start-sit", group: "Command Center" },
+  {
+    id: "Weekly Report",
+    slug: "weekly-report",
+    group: "Command Center",
+    unavailableForGuillotine: true,
+  },
+  { id: "Standings", slug: "standings", group: "League Analysis" },
+  { id: "Power Rankings", slug: "power-rankings", group: "League Analysis" },
+  { id: "Expected Wins", slug: "expected-wins", group: "League Analysis" },
+  {
+    id: "Roster Management",
+    slug: "roster-management",
+    group: "League Analysis",
+  },
+  { id: "Playoffs", slug: "playoffs", group: "League Analysis" },
+  {
+    id: "Season Forecast",
+    slug: "season-forecast",
+    group: "League Analysis",
+    unavailableForGuillotine: true,
+  },
+  { id: "Draft", slug: "draft", group: "League Analysis" },
+  { id: "Player Values", slug: "player-values", group: "My Team & Tools" },
+  { id: "Trade Lab", slug: "trade-lab", group: "My Team & Tools" },
+  { id: "League History", slug: "league-history", group: "History & Media" },
+  {
+    id: "Manager Profiles",
+    slug: "manager-profiles",
+    group: "History & Media",
+    unavailableForGuillotine: true,
+  },
+  {
+    id: "Podcast",
+    slug: "podcast",
+    group: "History & Media",
+    unavailableForGuillotine: true,
+  },
+  { id: "Wrapped", slug: "wrapped", group: "History & Media" },
+  {
+    id: "ESPN",
+    slug: "espn",
+    group: "Command Center",
+    hiddenFromNavigation: true,
+  },
 ] as const;
 
 export type LeagueFeature = (typeof leagueFeatures)[number]["id"];
+export type LeagueViewSlug = (typeof leagueFeatures)[number]["slug"];
 
 export const customizableLeagueFeatures = [
   {
@@ -64,12 +108,40 @@ const leagueFeatureIds = new Set<string>(
   leagueFeatures.map((feature) => feature.id)
 );
 
+const featureBySlug = new Map<string, LeagueFeature>(
+  leagueFeatures.map((feature) => [feature.slug, feature.id])
+);
+featureBySlug.set("schedule-simulator", "Season Forecast");
+
+const slugByFeature = new Map<LeagueFeature, LeagueViewSlug>(
+  leagueFeatures.map((feature) => [feature.id, feature.slug])
+);
+
 export const isLeagueFeature = (value: string): value is LeagueFeature =>
   leagueFeatureIds.has(value);
 
 export const normalizeLeagueFeature = (value: string): LeagueFeature => {
   if (value === "Schedule Simulator") return "Season Forecast";
+  const fromSlug = getFeatureFromViewSlug(value);
+  if (fromSlug) return fromSlug;
   return isLeagueFeature(value) ? value : "Standings";
+};
+
+export const getViewSlugForFeature = (
+  feature: string
+): LeagueViewSlug | undefined => {
+  if (!isLeagueFeature(feature)) return undefined;
+  return slugByFeature.get(feature);
+};
+
+export const getFeatureFromViewSlug = (
+  value: unknown
+): LeagueFeature | null => {
+  const raw = Array.isArray(value) ? value[0] : value;
+  if (typeof raw !== "string") return null;
+  const normalized = raw.trim().toLowerCase();
+  if (!normalized) return null;
+  return featureBySlug.get(normalized) ?? null;
 };
 
 export const sidebarLeagueFeatures = leagueFeatures.filter(

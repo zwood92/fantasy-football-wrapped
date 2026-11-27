@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, type Component } from "vue";
+import { computed, ref, type Component } from "vue";
 import type { SidebarProps } from "@/components/ui/sidebar";
 import { useSidebar } from "@/components/ui/sidebar";
 import {
@@ -16,6 +16,7 @@ import {
 import {
   ChartColumn,
   ChartNoAxesCombined,
+  ChevronDown,
   FolderClock,
   Gift,
   Home,
@@ -34,24 +35,57 @@ import {
   Dices,
   FlaskConical,
   IdCard,
+  LayoutDashboard,
   ListOrdered,
   Mic,
 } from "@lucide/vue";
 import { Separator } from "../ui/separator";
 import { useStore } from "../../store/store";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { useAuthStore } from "@/store/auth";
 import { useSubscriptionStore } from "@/store/subscription";
 import { clearPendingCheckout } from "@/lib/pendingCheckout";
-import { sidebarLeagueFeatures, type LeagueFeature } from "@/lib/features";
+import {
+  isLeagueFeatureAvailable,
+  leagueFeatureGroups,
+  sidebarLeagueFeatures,
+  type LeagueFeature,
+  type LeagueFeatureGroup,
+} from "@/lib/features";
+import { useLeagueNav } from "@/composables/useLeagueNav";
+import { getParsedStorageItem } from "@/lib/storage";
 
 const store = useStore();
 const authStore = useAuthStore();
 const subStore = useSubscriptionStore();
 const route = useRoute();
-const router = useRouter();
 const props = defineProps<SidebarProps>();
 const { isMobile, setOpenMobile } = useSidebar();
+const { goToFeature } = useLeagueNav();
+
+const isStringArray = (value: unknown): value is string[] =>
+  Array.isArray(value) && value.every((item) => typeof item === "string");
+
+const collapsedGroups = ref<string[]>(
+  getParsedStorageItem<string[]>("collapsedSidebarGroups", [], {
+    isValid: isStringArray,
+  })
+);
+
+const toggleGroup = (group: LeagueFeatureGroup) => {
+  if (collapsedGroups.value.includes(group)) {
+    collapsedGroups.value = collapsedGroups.value.filter((g) => g !== group);
+  } else {
+    collapsedGroups.value = [...collapsedGroups.value, group];
+  }
+  localStorage.setItem(
+    "collapsedSidebarGroups",
+    JSON.stringify(collapsedGroups.value)
+  );
+};
+
+const isGroupCollapsed = (group: LeagueFeatureGroup) =>
+  collapsedGroups.value.includes(group);
 
 const currentUser = computed(() => {
   if (authStore.isAuthenticated) {
@@ -67,6 +101,7 @@ const defaultRouteQuery = computed(() => {
     tradeMode,
     tradePlayerId,
     tradeRosterId,
+    view,
     ...query
   } = route.query;
   return query;
@@ -90,31 +125,14 @@ const RouteTabChange = () => {
   }
 };
 
-const goBackToHome = () => {
-  router.push({ path: "/", query: defaultRouteQuery.value });
-};
-
 const changeTab = (tab: LeagueFeature) => {
-  clearPendingCheckout();
-  if (route.path !== "/") {
-    goBackToHome();
-  } else if (
-    route.query.intent ||
-    route.query.upgrade_source ||
-    route.query.destination ||
-    route.query.tradeMode ||
-    route.query.tradePlayerId ||
-    route.query.tradeRosterId
-  ) {
-    router.replace({ path: "/", query: defaultRouteQuery.value });
-  }
-  store.currentTab = tab;
-  localStorage.setItem("currentTab", tab);
+  goToFeature(tab);
   closeMobileSidebar();
 };
 
 const featureIcons: Record<LeagueFeature, Component> = {
   Home,
+  Dashboard: LayoutDashboard,
   Standings: ChartColumn,
   "Power Rankings": ChartNoAxesCombined,
   "Expected Wins": TicketPercent,
@@ -133,18 +151,32 @@ const featureIcons: Record<LeagueFeature, Component> = {
   ESPN: ChartColumn,
 };
 
-const data = computed(() => ({
-  navMain: [
-    {
-      items: sidebarLeagueFeatures
-        .filter(({ id }) => store.isLeagueFeatureVisible(id))
-        .map(({ id: title }) => ({
-          title,
-          icon: featureIcons[title],
-        })),
-    },
-  ],
-}));
+const showHomeTab = computed(
+  () =>
+    !store.currentLeagueId && !route.query.leagueId && !store.loadingLeague
+);
+
+const seasonType = computed(() => store.currentLeague?.seasonType ?? "");
+
+const navGroups = computed(() =>
+  leagueFeatureGroups
+    .map((group) => {
+      const items = sidebarLeagueFeatures
+        .filter((feature) => feature.group === group)
+        .filter((feature) => store.isLeagueFeatureVisible(feature.id))
+        .filter((feature) => isLeagueFeatureAvailable(feature.id, seasonType.value))
+        .filter((feature) => feature.id !== "Home" || showHomeTab.value)
+        .map((feature) => ({
+          title: feature.id,
+          icon: featureIcons[feature.id],
+        }));
+      return {
+        group,
+        items,
+      };
+    })
+    .filter((section) => section.items.length > 0)
+);
 </script>
 
 <template>
@@ -152,7 +184,10 @@ const data = computed(() => ({
     <SidebarHeader>
       <SidebarMenu>
         <SidebarMenuItem>
-          <div class="flex items-center ml-2 mt-1.5 cursor-pointer" @click="changeTab('Home')">
+          <div
+            class="flex items-center ml-2 mt-1.5 cursor-pointer"
+            @click="changeTab('Home')"
+          >
             <img
               height="32"
               width="32"
@@ -174,38 +209,33 @@ const data = computed(() => ({
       class="mr-2 mt-2 data-[orientation=vertical]:h-4"
     />
     <SidebarContent>
-      <SidebarGroup v-for="item in data.navMain" :key="item.items.length">
-        <SidebarGroupContent>
+      <SidebarGroup
+        v-for="section in navGroups"
+        :key="section.group"
+        class="py-1"
+      >
+        <button
+          type="button"
+          class="flex items-center justify-between w-full px-2 py-1 text-[11px] font-semibold tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors"
+          :aria-expanded="!isGroupCollapsed(section.group)"
+          @click="toggleGroup(section.group)"
+        >
+          <span>{{ section.group }}</span>
+          <ChevronDown
+            class="w-3.5 h-3.5 transition-transform duration-150"
+            :class="isGroupCollapsed(section.group) ? '-rotate-90' : ''"
+          />
+        </button>
+        <SidebarGroupContent v-show="!isGroupCollapsed(section.group)">
           <SidebarMenu>
             <SidebarMenuItem
-              v-for="childItem in item.items"
+              v-for="childItem in section.items"
               :key="childItem.title"
             >
               <SidebarMenuButton
-                v-if="childItem.title !== 'Home'"
                 as-child
                 :is-active="
                   route.path === '/' && store.currentTab === childItem.title
-                "
-                @click="changeTab(childItem.title)"
-                class="cursor-pointer"
-              >
-                <div>
-                  <component :is="childItem.icon" v-if="childItem.icon" />
-                  <p>
-                    {{ childItem.title }}
-                  </p>
-                </div>
-              </SidebarMenuButton>
-              <SidebarMenuButton
-                v-else-if="
-                  !store.currentLeagueId &&
-                  !route.query.leagueId &&
-                  !store.loadingLeague
-                "
-                as-child
-                :is-active="
-                  store.currentTab === childItem.title && route.path === '/'
                 "
                 @click="changeTab(childItem.title)"
                 class="cursor-pointer"

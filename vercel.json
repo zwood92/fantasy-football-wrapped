@@ -8,6 +8,12 @@
     "api/report-image.ts": {
       "includeFiles": "server/og-assets/**",
       "maxDuration": 10
+    },
+    "api/podcast.ts": {
+      "maxDuration": 60
+    },
+    "api/podcast-audio.ts": {
+      "maxDuration": 60
     }
   },
   "rewrites": [

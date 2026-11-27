@@ -1,0 +1,12 @@
+{
+  "name": "elevenlabs-creative",
+  "displayName": "ElevenLabs Creative Voices",
+  "version": "1.0.0",
+  "description": "Connects the ElevenLabs Creative remote MCP server (https://api.elevenlabs.io/v1/mcp-creative) to design custom voices and synthesize multi-speaker fantasy football podcast episodes.",
+  "homepage": "https://elevenlabs.io",
+  "suggestedPrompts": [
+    "Design 3 custom ElevenLabs voices for Spencer, Johnny Two-Screens, and Scoop Sullivan",
+    "List available ElevenLabs voices and assign the best matches to our 3 podcast hosts",
+    "Generate studio multi-speaker audio for this week's league podcast script"
+  ]
+}

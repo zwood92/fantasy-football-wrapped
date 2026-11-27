@@ -248,4 +248,20 @@ describe("main store", () => {
       "manager-a:manager-b": "A storied rivalry",
     });
   });
+
+  test("persists selectedRosterId per league and auto-matches username", () => {
+    const store = useStore();
+    const league = buildLeague("league-1");
+    store.updateLeagueInfo(league);
+    store.updateCurrentLeagueId(getLeagueKey(league));
+
+    expect(store.currentSelectedRosterId).toBe(1);
+
+    store.setSelectedRosterId(2);
+    expect(store.currentSelectedRosterId).toBe(2);
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      "selectedRosterIdByLeague",
+      JSON.stringify({ "league-1": 2 })
+    );
+  });
 });

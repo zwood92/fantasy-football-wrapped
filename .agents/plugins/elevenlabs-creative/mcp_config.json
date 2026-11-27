@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "elevenlabs-creative": {
+      "url": "https://api.elevenlabs.io/v1/mcp-creative"
+    }
+  }
+}

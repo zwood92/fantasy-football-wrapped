@@ -8,6 +8,10 @@ import espnHandler from "./api/espn.js";
 import reportImageHandler from "./api/report-image.js";
 import reportPageHandler from "./api/report-page.js";
 import podcastHandler from "./api/podcast.js";
+import podcastAudioHandler, {
+  getLatestCachedPodcastHandler,
+  listElevenLabsVoicesHandler,
+} from "./api/podcast-audio.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,6 +39,39 @@ async function startServer() {
       await podcastHandler(req as any, res as any);
     } catch (err) {
       console.error("Error in /api/podcast:", err);
+      if (!res.headersSent) {
+        res.status(500).json({ error: "Internal server error" });
+      }
+    }
+  });
+
+  app.post("/api/podcast-audio", async (req, res) => {
+    try {
+      await podcastAudioHandler(req as any, res as any);
+    } catch (err) {
+      console.error("Error in /api/podcast-audio:", err);
+      if (!res.headersSent) {
+        res.status(500).json({ error: "Internal server error" });
+      }
+    }
+  });
+
+  app.get("/api/podcast-voices", async (req, res) => {
+    try {
+      await listElevenLabsVoicesHandler(req as any, res as any);
+    } catch (err) {
+      console.error("Error in /api/podcast-voices:", err);
+      if (!res.headersSent) {
+        res.status(500).json({ error: "Internal server error" });
+      }
+    }
+  });
+
+  app.get("/api/podcast-latest", async (req, res) => {
+    try {
+      await getLatestCachedPodcastHandler(req as any, res as any);
+    } catch (err) {
+      console.error("Error in /api/podcast-latest:", err);
       if (!res.headersSent) {
         res.status(500).json({ error: "Internal server error" });
       }

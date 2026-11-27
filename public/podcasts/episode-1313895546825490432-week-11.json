@@ -1,0 +1,576 @@
+{
+  "title": "Playoff Bubble Panic & Fraud Exposure Special",
+  "subtitle": "Week 11 Blowouts, 33-Move Meltdowns, and Jordan's Fire Sale",
+  "week": 11,
+  "leagueName": "Don't you want a fanta fanta fantasy league?",
+  "summary": "Scoop Sullivan, Johnny Two-Screens, and Dr. Metric dissect a savage Week 11 featuring five 30-plus point blowouts, K9 KenBoned cruising to 11-0, ItsOurYear dropping a 140.94 bomb, Loud Submitters imploding despite 33 moves and a blockbuster RB trade, and total chaos on the six-team playoff bubble.",
+  "highlights": [
+    "ItsOurYear explodes for a league-high 140.94 to crush unluckiest loser Hall Pass by 55.2 points",
+    "Undefeated K9 KenBoned moves to 11-0 with a 102.66 to 50.74 demolition of jordanzfinci",
+    "Luckiest winner Drake it til you make it steals an 80.22 to 56.46 win over Loud Submitters",
+    "Absentee Pretty Pattys makes only two moves all year and shocks second-place The Boutte Warriors 116.96 to 80.84",
+    "StevenStrybos earns Biggest Bench Blunder by sitting Fernando Mendoza and his 22.88 points",
+    "Blockbuster Week 11 trade sends Kyren Williams and Rhamondre Stevenson from jordanzfinci to Loud Submitters for draft capital"
+  ],
+  "segments": [
+    {
+      "speaker": "Beat Reporter",
+      "characterName": "Scoop Sullivan",
+      "voiceId": "gU0LNdkMOQCOrPrwtbee",
+      "role": "League Insider",
+      "avatar": "/avatars/avatar3.svg",
+      "text": "Welcome to Week 11 of Don't you want a fanta fanta fantasy league, our Playoff Bubble Panic and Fraud Exposure Special! I am Scoop Sullivan, flanked by Johnny Two-Screens and Spencer Dr. Metric Vance. Five of six games ended in thirty-plus point murders, and the playoff race just exploded.",
+      "tone": "breaking",
+      "topic": "Week 11 Carnage Cold Open",
+      "act": "Act I: Cold Open & Headline Chaos"
+    },
+    {
+      "speaker": "Comedian",
+      "characterName": "Johnny Two-Screens Russo",
+      "voiceId": "ljX1ZrXuDIIRVcmiVSyR",
+      "role": "Comedy Host",
+      "avatar": "/avatars/avatar2.svg",
+      "text": "[laughs] Exploded? Scoop, Week 11 was a public execution! Not a single matchup finished within twenty points. Half this twelve-team Half PPR league completely forgot how football works while K9 KenBoned struts around at 11 and 0 like Thanos holding a cold soda and laughing at mortals.",
+      "tone": "funny",
+      "topic": "Blowout Parade Roast",
+      "act": "Act I: Cold Open & Headline Chaos"
+    },
+    {
+      "speaker": "Analytical Guru",
+      "characterName": "Spencer Dr. Metric Vance",
+      "voiceId": "Bj9UqZbhQsanLzgalpEG",
+      "role": "Quant Analyst",
+      "avatar": "/avatars/avatar1.svg",
+      "text": "The scoring distribution this week was genuinely grotesque. The league average landed at 88.5 with a median of 83.29, yet five squads face-planted beneath the median while two rosters cleared 116. When volatility spikes this violently in Week 11, our entire six-team playoff bubble screams violent regression.",
+      "tone": "analytical",
+      "topic": "Week 11 Scoring Volatility",
+      "act": "Act I: Cold Open & Headline Chaos"
+    },
+    {
+      "speaker": "Comedian",
+      "characterName": "Johnny Two-Screens Russo",
+      "voiceId": "ljX1ZrXuDIIRVcmiVSyR",
+      "role": "Comedy Host",
+      "avatar": "/avatars/avatar2.svg",
+      "text": "Relax, TurboTax, nobody cares about your precious bell curve when jordanzfinci, our beloved Man-Egg-Ghost-Three squad, barely crawled past fifty points! 50.74! You could draft blindfolded at an Applebee's bar during happy hour and accidentally stumble into sixty points without breaking a sweat.",
+      "tone": "sarcastic",
+      "topic": "Roasting the Low Scorer",
+      "act": "Act I: Cold Open & Headline Chaos"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "characterName": "Scoop Sullivan",
+      "voiceId": "gU0LNdkMOQCOrPrwtbee",
+      "role": "League Insider",
+      "avatar": "/avatars/avatar3.svg",
+      "text": "Hold your flamethrower, Johnny, because my Pentagon-level sources confirm Jordan's Man-Egg-Ghost-Three squad actually detonated his own roster in a blockbuster Week 11 trade! Before we raid the transaction wire, let us inspect the wreckage from our biggest massacre and our most hilariously ugly thriller.",
+      "tone": "dramatic",
+      "topic": "Teasing the Trade Drama",
+      "act": "Act I: Cold Open & Headline Chaos"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "characterName": "Scoop Sullivan",
+      "voiceId": "gU0LNdkMOQCOrPrwtbee",
+      "role": "League Insider",
+      "avatar": "/avatars/avatar3.svg",
+      "text": "[excited] Opening Act Two with our Biggest Blowout of Week 11! ItsOurYear, led by collinshaw, obliterated Hall Pass by 55.2 points, dropping a league-high 140.94 to 85.74. Running back Chuba Hubbard went ballistic for 26 points to spearhead an absolute merciless massacre that rattled the entire league.",
+      "tone": "excited",
+      "topic": "Biggest Blowout: ItsOurYear vs Hall Pass",
+      "act": "Act II: Marquee Massacre & Cardiac Thriller"
+    },
+    {
+      "speaker": "Comedian",
+      "characterName": "Johnny Two-Screens Russo",
+      "voiceId": "ljX1ZrXuDIIRVcmiVSyR",
+      "role": "Comedy Host",
+      "avatar": "/avatars/avatar2.svg",
+      "text": "140.94! Collinshaw woke up sitting at 5 and 6 and chose pure, unfiltered violence! Meanwhile, poor Hall Pass falls to 3 and 8 despite scoring 85.74, which beat the league median! That is like wearing your nicest suit to a wedding and getting hit by the catering van.",
+      "tone": "funny",
+      "topic": "Hall Pass Bad Beat",
+      "act": "Act II: Marquee Massacre & Cardiac Thriller"
+    },
+    {
+      "speaker": "Analytical Guru",
+      "characterName": "Spencer Dr. Metric Vance",
+      "voiceId": "Bj9UqZbhQsanLzgalpEG",
+      "role": "Quant Analyst",
+      "avatar": "/avatars/avatar1.svg",
+      "text": "Mathematically, Hall Pass is our official Unluckiest Loser of Week 11. Posting 85.74 beats half the league, yet JkHood walked directly into a buzzsaw. Worse, Hall Pass left Ted Hurst III and his 20.1 points on the bench while starting Luther Burden III for a painful 2.3.",
+      "tone": "analytical",
+      "topic": "Unluckiest Loser Breakdown",
+      "act": "Act II: Marquee Massacre & Cardiac Thriller"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "characterName": "Scoop Sullivan",
+      "voiceId": "gU0LNdkMOQCOrPrwtbee",
+      "role": "League Insider",
+      "avatar": "/avatars/avatar3.svg",
+      "text": "Now for our alleged Cardiac Thriller, the closest game of Week 11, which still finished with a massive 23.76 point margin! Drake it til you make it defeated Loud Submitters 80.22 to 56.46, leaving both EverettWood and wbruner99 deadlocked in the standings at 7 and 4.",
+      "tone": "sarcastic",
+      "topic": "Closest Game: Drake it til you make it vs Loud Submitters",
+      "act": "Act II: Marquee Massacre & Cardiac Thriller"
+    },
+    {
+      "speaker": "Comedian",
+      "characterName": "Johnny Two-Screens Russo",
+      "voiceId": "ljX1ZrXuDIIRVcmiVSyR",
+      "role": "Comedy Host",
+      "avatar": "/avatars/avatar2.svg",
+      "text": "[scoffs] Closest game?! That was two exhausted uncles wrestling over the final mozzarella stick at midnight! Loud Submitters coughed up 56.46 points! Jordyn Tyson gave wbruner99 1.5 miserable points while Antonio Williams lounged on the bench with 16.7. That game belonged behind a parental warning label.",
+      "tone": "funny",
+      "topic": "Pillow Fight Roast",
+      "act": "Act II: Marquee Massacre & Cardiac Thriller"
+    },
+    {
+      "speaker": "Analytical Guru",
+      "characterName": "Spencer Dr. Metric Vance",
+      "voiceId": "Bj9UqZbhQsanLzgalpEG",
+      "role": "Quant Analyst",
+      "avatar": "/avatars/avatar1.svg",
+      "text": "[sighs] This matchup physically offends my spreadsheets. Drake it til you make it is our undisputed Luckiest Winner of Week 11. Jahmyr Gibbs dragged EverettWood across the line with 25.8 points, and their 80.22 score fell beneath the 83.29 median, yet they still walked away smiling.",
+      "tone": "dramatic",
+      "topic": "Luckiest Winner Breakdown",
+      "act": "Act II: Marquee Massacre & Cardiac Thriller"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "characterName": "Scoop Sullivan",
+      "voiceId": "gU0LNdkMOQCOrPrwtbee",
+      "role": "League Insider",
+      "avatar": "/avatars/avatar3.svg",
+      "text": "Time for our Around the League Matchup Blitz! First, undefeated juggernaut K9 KenBoned stormed to 11 and 0 by humiliating jordanzfinci 102.66 to 50.74, a ruthless 51.92 point demolition. Wide receiver CeeDee Lamb paced jdub7517 with 24.7 points while Man-Egg-Ghost-Three posted the lowest score of Week 11.",
+      "tone": "breaking",
+      "topic": "K9 KenBoned vs jordanzfinci",
+      "act": "Act III: Around the League Matchup Blitz"
+    },
+    {
+      "speaker": "Comedian",
+      "characterName": "Johnny Two-Screens Russo",
+      "voiceId": "ljX1ZrXuDIIRVcmiVSyR",
+      "role": "Comedy Host",
+      "avatar": "/avatars/avatar2.svg",
+      "text": "[laughs] 50.74! Jordan's Man-Egg-Ghost-Three squad dropped to 6 and 5 while starting Ryan Flournoy for 1.6 points! Meanwhile, Ladd McConkey sat on the bench screaming with 18.2 points. Plugging Ryan Flournoy into your lineup against an 11 and 0 buzzsaw should carry a mandatory thirty-day jail sentence.",
+      "tone": "funny",
+      "topic": "Roasting Jordan's Lineup",
+      "act": "Act III: Around the League Matchup Blitz"
+    },
+    {
+      "speaker": "Analytical Guru",
+      "characterName": "Spencer Dr. Metric Vance",
+      "voiceId": "Bj9UqZbhQsanLzgalpEG",
+      "role": "Quant Analyst",
+      "avatar": "/avatars/avatar1.svg",
+      "text": "Next up, a seismic upset that broke my efficiency dashboard. Four and seven Pretty Pattys dismantled eight and three The Boutte Warriors 116.96 to 80.84, winning by 36.12 points as Jonah Coleman erupted for a jaw-dropping 32.9 points to shock zwood92 and the entire playoff race.",
+      "tone": "analytical",
+      "topic": "Pretty Pattys vs The Boutte Warriors",
+      "act": "Act III: Around the League Matchup Blitz"
+    },
+    {
+      "speaker": "Comedian",
+      "characterName": "Johnny Two-Screens Russo",
+      "voiceId": "ljX1ZrXuDIIRVcmiVSyR",
+      "role": "Comedy Host",
+      "avatar": "/avatars/avatar2.svg",
+      "text": "Wait a minute! Pretty Pattys manager zpendy is our least active manager with literally two moves all season! Two! The man logs in once a quarter and still humiliated the two seed while DK Metcalf handed Boutte Warriors 0.7 points and Jayden Daniels sat with 17.06!",
+      "tone": "sarcastic",
+      "topic": "Two-Move Upset Shocker",
+      "act": "Act III: Around the League Matchup Blitz"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "characterName": "Scoop Sullivan",
+      "voiceId": "gU0LNdkMOQCOrPrwtbee",
+      "role": "League Insider",
+      "avatar": "/avatars/avatar3.svg",
+      "text": "Over in Matchup Five, andyehlert moved to 5 and 6 by flattening four and seven Sully1of1 106.3 to 73.46, a convincing 32.84 point rout. Quarterback Dak Prescott torched the scoreboard for 35.9 points, delivering the single biggest individual explosion across the entire league in Week 11.",
+      "tone": "excited",
+      "topic": "andyehlert vs Sully1of1",
+      "act": "Act III: Around the League Matchup Blitz"
+    },
+    {
+      "speaker": "Comedian",
+      "characterName": "Johnny Two-Screens Russo",
+      "voiceId": "ljX1ZrXuDIIRVcmiVSyR",
+      "role": "Comedy Host",
+      "avatar": "/avatars/avatar2.svg",
+      "text": "[scoffs] And Sully1of1 countered that Dak nuke by starting Blake Corum for an actual goose egg, zero point zero! Imagine eating a donut while Mike Evans sits right there on your bench dropping 19.9 points! Even TurboTax knows you never bench Mike Evans for zero.",
+      "tone": "funny",
+      "topic": "Blake Corum Goose Egg",
+      "act": "Act III: Around the League Matchup Blitz"
+    },
+    {
+      "speaker": "Analytical Guru",
+      "characterName": "Spencer Dr. Metric Vance",
+      "voiceId": "Bj9UqZbhQsanLzgalpEG",
+      "role": "Quant Analyst",
+      "avatar": "/avatars/avatar1.svg",
+      "text": "Thank you, Johnny, I appreciate basic expected-points sanity. Wrapping our blitz, four and seven Cowboys buried two and nine StevenStrybos 104.2 to 63.5, a brutal 40.7 point beatdown. Ashton Jeanty rumbled for 25.4 points as dmcburney kept faint mathematical playoff hopes breathing for another week.",
+      "tone": "analytical",
+      "topic": "Cowboys vs StevenStrybos",
+      "act": "Act III: Around the League Matchup Blitz"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "characterName": "Scoop Sullivan",
+      "voiceId": "gU0LNdkMOQCOrPrwtbee",
+      "role": "League Insider",
+      "avatar": "/avatars/avatar3.svg",
+      "text": "Act Four brings Bench Crimes and Fraud Watch! Step forward and claim the dunce cap for our Biggest Bench Blunder of Week 11: StevenStrybos benched quarterback Fernando Mendoza and his 22.88 points while starting Tyler Allgeier for an utterly pathetic 2.3 points against Cowboys.",
+      "tone": "dramatic",
+      "topic": "Biggest Bench Blunder: StevenStrybos",
+      "act": "Act IV: Bench Crimes & Fraud Watch"
+    },
+    {
+      "speaker": "Comedian",
+      "characterName": "Johnny Two-Screens Russo",
+      "voiceId": "ljX1ZrXuDIIRVcmiVSyR",
+      "role": "Comedy Host",
+      "avatar": "/avatars/avatar2.svg",
+      "text": "[laughs] Sure, losing by 40.7 means Fernando Mendoza was not rescuing StevenStrybos from dmcburney or his 2 and 9 disaster. Still, watching 22.88 rot on your bench while Tyler Allgeier trips over painted turf for 2.3 is pure, museum-grade Sacko cinema that deserves an Oscar.",
+      "tone": "funny",
+      "topic": "Sacko Cinema Roast",
+      "act": "Act IV: Bench Crimes & Fraud Watch"
+    },
+    {
+      "speaker": "Analytical Guru",
+      "characterName": "Spencer Dr. Metric Vance",
+      "voiceId": "Bj9UqZbhQsanLzgalpEG",
+      "role": "Quant Analyst",
+      "avatar": "/avatars/avatar1.svg",
+      "text": "Now let us ring the Fraud Watch alarm bells loud and clear. The Boutte Warriors hold second place at 8 and 3 with 1187 points for, yet stumbling to 80.84 against a manager with two total moves exposes a paper-thin floor that contenders should eagerly exploit.",
+      "tone": "analytical",
+      "topic": "Fraud Watch: The Boutte Warriors",
+      "act": "Act IV: Bench Crimes & Fraud Watch"
+    },
+    {
+      "speaker": "Comedian",
+      "characterName": "Johnny Two-Screens Russo",
+      "voiceId": "ljX1ZrXuDIIRVcmiVSyR",
+      "role": "Comedy Host",
+      "avatar": "/avatars/avatar2.svg",
+      "text": "Forget Boutte Warriors, paint giant red fraud arrows on Drake it til you make it and Loud Submitters! Both teams sit at 7 and 4! EverettWood snuck out a win with 80.22, and Loud Submitters barely cleared 56! Neither roster wants any smoke from ItsOurYear in December.",
+      "tone": "sarcastic",
+      "topic": "Fraud Watch: The 7-4 Twins",
+      "act": "Act IV: Bench Crimes & Fraud Watch"
+    },
+    {
+      "speaker": "Analytical Guru",
+      "characterName": "Spencer Dr. Metric Vance",
+      "voiceId": "Bj9UqZbhQsanLzgalpEG",
+      "role": "Quant Analyst",
+      "avatar": "/avatars/avatar1.svg",
+      "text": "[sighs] Johnny is painfully accurate here. ItsOurYear sits sixth at 5 and 6 with 1185.9 points for, virtually identical to 8 and 3 Boutte Warriors! Meanwhile, Drake it til you make it owns 1158.6 points but just burned a massive chunk of schedule luck winning below median.",
+      "tone": "analytical",
+      "topic": "Points For Reality Check",
+      "act": "Act IV: Bench Crimes & Fraud Watch"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "characterName": "Scoop Sullivan",
+      "voiceId": "gU0LNdkMOQCOrPrwtbee",
+      "role": "League Insider",
+      "avatar": "/avatars/avatar3.svg",
+      "text": "[excited] Breaking leak straight from the Week 11 trade desk! In our lone blockbuster deal, jordanzfinci shipped running backs Rhamondre Stevenson and Kyren Williams to Loud Submitters in exchange for draft capital! At 6 and 5, Man-Egg-Ghost-Three just cashed in his chips and started rebuilding!",
+      "tone": "breaking",
+      "topic": "Week 11 Blockbuster Trade",
+      "act": "Act V: Transaction Wire & Trade Police"
+    },
+    {
+      "speaker": "Comedian",
+      "characterName": "Johnny Two-Screens Russo",
+      "voiceId": "ljX1ZrXuDIIRVcmiVSyR",
+      "role": "Comedy Host",
+      "avatar": "/avatars/avatar2.svg",
+      "text": "[laughs] Hold on! Loud Submitters acquired Kyren Williams and Rhamondre Stevenson, leads the league with 33 transactions, and STILL grabbed Emari Demercado off free agency, dropped Audric Estime, started Demercado for 3.9 points, and scored 56.46?! Thirty-three roster moves just to construct a flaming shopping cart!",
+      "tone": "funny",
+      "topic": "Loud Submitters Waiver Chaos",
+      "act": "Act V: Transaction Wire & Trade Police"
+    },
+    {
+      "speaker": "Analytical Guru",
+      "characterName": "Spencer Dr. Metric Vance",
+      "voiceId": "Bj9UqZbhQsanLzgalpEG",
+      "role": "Quant Analyst",
+      "avatar": "/avatars/avatar1.svg",
+      "text": "This is textbook over-trading and transaction fatigue. Loud Submitters churns 33 moves to cough up 56.46, whereas Pretty Pattys makes two moves all season and detonates for 116.96. Every time wbruner99 mashes the add-drop button, his projected lineup efficiency plummets by two full standard deviations.",
+      "tone": "analytical",
+      "topic": "Over-Management vs Minimalism",
+      "act": "Act V: Transaction Wire & Trade Police"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "characterName": "Scoop Sullivan",
+      "voiceId": "gU0LNdkMOQCOrPrwtbee",
+      "role": "League Insider",
+      "avatar": "/avatars/avatar3.svg",
+      "text": "Wait until you hear jordanzfinci's chaotic quarterback spiral! First, he dropped James Conner to sign Jalon Daniels. Then he immediately dumped Jalon Daniels to add Joe Milton and STARTED Milton for 6.34 points, while newly signed Chimere Dike dropped 10.3 on his bench after cutting Ty Johnson!",
+      "tone": "dramatic",
+      "topic": "Jordan's Quarterback Carousel",
+      "act": "Act V: Transaction Wire & Trade Police"
+    },
+    {
+      "speaker": "Comedian",
+      "characterName": "Johnny Two-Screens Russo",
+      "voiceId": "ljX1ZrXuDIIRVcmiVSyR",
+      "role": "Comedy Host",
+      "avatar": "/avatars/avatar2.svg",
+      "text": "[scoffs] Starting Joe Milton for 6.34 right after selling Kyren Williams! Somebody check if Jordan accidentally handed his phone to a raccoon at three in the morning! Meanwhile, ItsOurYear flexed by dropping Devin Singletary for Kyle McCord, benching McCord's 2.98, and still dropping 140.94.",
+      "tone": "sarcastic",
+      "topic": "Joe Milton & Victory Cigar Adds",
+      "act": "Act V: Transaction Wire & Trade Police"
+    },
+    {
+      "speaker": "Analytical Guru",
+      "characterName": "Spencer Dr. Metric Vance",
+      "voiceId": "Bj9UqZbhQsanLzgalpEG",
+      "role": "Quant Analyst",
+      "avatar": "/avatars/avatar1.svg",
+      "text": "Let us lock in the playoff picture across this twelve-team, six-spot gauntlet. K9 KenBoned towers alone at 11 and 0 with 1494.2 points for, over three hundred points ahead of second-place Boutte Warriors at 8 and 3 and third-place Drake it til you make it at 7 and 4.",
+      "tone": "analytical",
+      "topic": "Top of the Standings",
+      "act": "Act VI: Playoff Panic & Sign-Off"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "characterName": "Scoop Sullivan",
+      "voiceId": "gU0LNdkMOQCOrPrwtbee",
+      "role": "League Insider",
+      "avatar": "/avatars/avatar3.svg",
+      "text": "The real panic lives on the playoff bubble! Fifth-place jordanzfinci clings to 6 and 5 with 1099.2 points after gutting his backfield. Sixth-place ItsOurYear and seventh-place andyehlert sit tied at 5 and 6, though ItsOurYear swamps andyehlert's 962.1 points, while eighth-place Pretty Pattys lurks at 4 and 7 with 942.1.",
+      "tone": "dramatic",
+      "topic": "Playoff Bubble Breakdown",
+      "act": "Act VI: Playoff Panic & Sign-Off"
+    },
+    {
+      "speaker": "Comedian",
+      "characterName": "Johnny Two-Screens Russo",
+      "voiceId": "ljX1ZrXuDIIRVcmiVSyR",
+      "role": "Comedy Host",
+      "avatar": "/avatars/avatar2.svg",
+      "text": "[laughs] And down in twelfth place, two and nine StevenStrybos with 789.3 points is sprinting toward the Sacko trophy like his trousers caught fire! Start Fernando Mendoza, quit praying for two-point running backs, and maybe keep a fire extinguisher next to your lineup screen this Sunday.",
+      "tone": "funny",
+      "topic": "Sacko Frontrunner Roast",
+      "act": "Act VI: Playoff Panic & Sign-Off"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "characterName": "Scoop Sullivan",
+      "voiceId": "gU0LNdkMOQCOrPrwtbee",
+      "role": "League Insider",
+      "avatar": "/avatars/avatar3.svg",
+      "text": "That puts a bow on our Week 11 Playoff Bubble Panic and Fraud Exposure Special for Don't you want a fanta fanta fantasy league! For Johnny Two-Screens and Spencer Dr. Metric Vance, I am Scoop Sullivan. Stop making 33 panic adds, set your starters, and see you Week 12!",
+      "tone": "excited",
+      "topic": "Show Sign-Off",
+      "act": "Act VI: Playoff Panic & Sign-Off"
+    }
+  ],
+  "script": [
+    {
+      "speaker": "Beat Reporter",
+      "text": "Welcome to Week 11 of Don't you want a fanta fanta fantasy league, our Playoff Bubble Panic and Fraud Exposure Special! I am Scoop Sullivan, flanked by Johnny Two-Screens and Spencer Dr. Metric Vance. Five of six games ended in thirty-plus point murders, and the playoff race just exploded.",
+      "tone": "breaking"
+    },
+    {
+      "speaker": "Comedian",
+      "text": "[laughs] Exploded? Scoop, Week 11 was a public execution! Not a single matchup finished within twenty points. Half this twelve-team Half PPR league completely forgot how football works while K9 KenBoned struts around at 11 and 0 like Thanos holding a cold soda and laughing at mortals.",
+      "tone": "funny"
+    },
+    {
+      "speaker": "Analytical Guru",
+      "text": "The scoring distribution this week was genuinely grotesque. The league average landed at 88.5 with a median of 83.29, yet five squads face-planted beneath the median while two rosters cleared 116. When volatility spikes this violently in Week 11, our entire six-team playoff bubble screams violent regression.",
+      "tone": "analytical"
+    },
+    {
+      "speaker": "Comedian",
+      "text": "Relax, TurboTax, nobody cares about your precious bell curve when jordanzfinci, our beloved Man-Egg-Ghost-Three squad, barely crawled past fifty points! 50.74! You could draft blindfolded at an Applebee's bar during happy hour and accidentally stumble into sixty points without breaking a sweat.",
+      "tone": "sarcastic"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "text": "Hold your flamethrower, Johnny, because my Pentagon-level sources confirm Jordan's Man-Egg-Ghost-Three squad actually detonated his own roster in a blockbuster Week 11 trade! Before we raid the transaction wire, let us inspect the wreckage from our biggest massacre and our most hilariously ugly thriller.",
+      "tone": "dramatic"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "text": "[excited] Opening Act Two with our Biggest Blowout of Week 11! ItsOurYear, led by collinshaw, obliterated Hall Pass by 55.2 points, dropping a league-high 140.94 to 85.74. Running back Chuba Hubbard went ballistic for 26 points to spearhead an absolute merciless massacre that rattled the entire league.",
+      "tone": "excited"
+    },
+    {
+      "speaker": "Comedian",
+      "text": "140.94! Collinshaw woke up sitting at 5 and 6 and chose pure, unfiltered violence! Meanwhile, poor Hall Pass falls to 3 and 8 despite scoring 85.74, which beat the league median! That is like wearing your nicest suit to a wedding and getting hit by the catering van.",
+      "tone": "funny"
+    },
+    {
+      "speaker": "Analytical Guru",
+      "text": "Mathematically, Hall Pass is our official Unluckiest Loser of Week 11. Posting 85.74 beats half the league, yet JkHood walked directly into a buzzsaw. Worse, Hall Pass left Ted Hurst III and his 20.1 points on the bench while starting Luther Burden III for a painful 2.3.",
+      "tone": "analytical"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "text": "Now for our alleged Cardiac Thriller, the closest game of Week 11, which still finished with a massive 23.76 point margin! Drake it til you make it defeated Loud Submitters 80.22 to 56.46, leaving both EverettWood and wbruner99 deadlocked in the standings at 7 and 4.",
+      "tone": "sarcastic"
+    },
+    {
+      "speaker": "Comedian",
+      "text": "[scoffs] Closest game?! That was two exhausted uncles wrestling over the final mozzarella stick at midnight! Loud Submitters coughed up 56.46 points! Jordyn Tyson gave wbruner99 1.5 miserable points while Antonio Williams lounged on the bench with 16.7. That game belonged behind a parental warning label.",
+      "tone": "funny"
+    },
+    {
+      "speaker": "Analytical Guru",
+      "text": "[sighs] This matchup physically offends my spreadsheets. Drake it til you make it is our undisputed Luckiest Winner of Week 11. Jahmyr Gibbs dragged EverettWood across the line with 25.8 points, and their 80.22 score fell beneath the 83.29 median, yet they still walked away smiling.",
+      "tone": "dramatic"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "text": "Time for our Around the League Matchup Blitz! First, undefeated juggernaut K9 KenBoned stormed to 11 and 0 by humiliating jordanzfinci 102.66 to 50.74, a ruthless 51.92 point demolition. Wide receiver CeeDee Lamb paced jdub7517 with 24.7 points while Man-Egg-Ghost-Three posted the lowest score of Week 11.",
+      "tone": "breaking"
+    },
+    {
+      "speaker": "Comedian",
+      "text": "[laughs] 50.74! Jordan's Man-Egg-Ghost-Three squad dropped to 6 and 5 while starting Ryan Flournoy for 1.6 points! Meanwhile, Ladd McConkey sat on the bench screaming with 18.2 points. Plugging Ryan Flournoy into your lineup against an 11 and 0 buzzsaw should carry a mandatory thirty-day jail sentence.",
+      "tone": "funny"
+    },
+    {
+      "speaker": "Analytical Guru",
+      "text": "Next up, a seismic upset that broke my efficiency dashboard. Four and seven Pretty Pattys dismantled eight and three The Boutte Warriors 116.96 to 80.84, winning by 36.12 points as Jonah Coleman erupted for a jaw-dropping 32.9 points to shock zwood92 and the entire playoff race.",
+      "tone": "analytical"
+    },
+    {
+      "speaker": "Comedian",
+      "text": "Wait a minute! Pretty Pattys manager zpendy is our least active manager with literally two moves all season! Two! The man logs in once a quarter and still humiliated the two seed while DK Metcalf handed Boutte Warriors 0.7 points and Jayden Daniels sat with 17.06!",
+      "tone": "sarcastic"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "text": "Over in Matchup Five, andyehlert moved to 5 and 6 by flattening four and seven Sully1of1 106.3 to 73.46, a convincing 32.84 point rout. Quarterback Dak Prescott torched the scoreboard for 35.9 points, delivering the single biggest individual explosion across the entire league in Week 11.",
+      "tone": "excited"
+    },
+    {
+      "speaker": "Comedian",
+      "text": "[scoffs] And Sully1of1 countered that Dak nuke by starting Blake Corum for an actual goose egg, zero point zero! Imagine eating a donut while Mike Evans sits right there on your bench dropping 19.9 points! Even TurboTax knows you never bench Mike Evans for zero.",
+      "tone": "funny"
+    },
+    {
+      "speaker": "Analytical Guru",
+      "text": "Thank you, Johnny, I appreciate basic expected-points sanity. Wrapping our blitz, four and seven Cowboys buried two and nine StevenStrybos 104.2 to 63.5, a brutal 40.7 point beatdown. Ashton Jeanty rumbled for 25.4 points as dmcburney kept faint mathematical playoff hopes breathing for another week.",
+      "tone": "analytical"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "text": "Act Four brings Bench Crimes and Fraud Watch! Step forward and claim the dunce cap for our Biggest Bench Blunder of Week 11: StevenStrybos benched quarterback Fernando Mendoza and his 22.88 points while starting Tyler Allgeier for an utterly pathetic 2.3 points against Cowboys.",
+      "tone": "dramatic"
+    },
+    {
+      "speaker": "Comedian",
+      "text": "[laughs] Sure, losing by 40.7 means Fernando Mendoza was not rescuing StevenStrybos from dmcburney or his 2 and 9 disaster. Still, watching 22.88 rot on your bench while Tyler Allgeier trips over painted turf for 2.3 is pure, museum-grade Sacko cinema that deserves an Oscar.",
+      "tone": "funny"
+    },
+    {
+      "speaker": "Analytical Guru",
+      "text": "Now let us ring the Fraud Watch alarm bells loud and clear. The Boutte Warriors hold second place at 8 and 3 with 1187 points for, yet stumbling to 80.84 against a manager with two total moves exposes a paper-thin floor that contenders should eagerly exploit.",
+      "tone": "analytical"
+    },
+    {
+      "speaker": "Comedian",
+      "text": "Forget Boutte Warriors, paint giant red fraud arrows on Drake it til you make it and Loud Submitters! Both teams sit at 7 and 4! EverettWood snuck out a win with 80.22, and Loud Submitters barely cleared 56! Neither roster wants any smoke from ItsOurYear in December.",
+      "tone": "sarcastic"
+    },
+    {
+      "speaker": "Analytical Guru",
+      "text": "[sighs] Johnny is painfully accurate here. ItsOurYear sits sixth at 5 and 6 with 1185.9 points for, virtually identical to 8 and 3 Boutte Warriors! Meanwhile, Drake it til you make it owns 1158.6 points but just burned a massive chunk of schedule luck winning below median.",
+      "tone": "analytical"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "text": "[excited] Breaking leak straight from the Week 11 trade desk! In our lone blockbuster deal, jordanzfinci shipped running backs Rhamondre Stevenson and Kyren Williams to Loud Submitters in exchange for draft capital! At 6 and 5, Man-Egg-Ghost-Three just cashed in his chips and started rebuilding!",
+      "tone": "breaking"
+    },
+    {
+      "speaker": "Comedian",
+      "text": "[laughs] Hold on! Loud Submitters acquired Kyren Williams and Rhamondre Stevenson, leads the league with 33 transactions, and STILL grabbed Emari Demercado off free agency, dropped Audric Estime, started Demercado for 3.9 points, and scored 56.46?! Thirty-three roster moves just to construct a flaming shopping cart!",
+      "tone": "funny"
+    },
+    {
+      "speaker": "Analytical Guru",
+      "text": "This is textbook over-trading and transaction fatigue. Loud Submitters churns 33 moves to cough up 56.46, whereas Pretty Pattys makes two moves all season and detonates for 116.96. Every time wbruner99 mashes the add-drop button, his projected lineup efficiency plummets by two full standard deviations.",
+      "tone": "analytical"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "text": "Wait until you hear jordanzfinci's chaotic quarterback spiral! First, he dropped James Conner to sign Jalon Daniels. Then he immediately dumped Jalon Daniels to add Joe Milton and STARTED Milton for 6.34 points, while newly signed Chimere Dike dropped 10.3 on his bench after cutting Ty Johnson!",
+      "tone": "dramatic"
+    },
+    {
+      "speaker": "Comedian",
+      "text": "[scoffs] Starting Joe Milton for 6.34 right after selling Kyren Williams! Somebody check if Jordan accidentally handed his phone to a raccoon at three in the morning! Meanwhile, ItsOurYear flexed by dropping Devin Singletary for Kyle McCord, benching McCord's 2.98, and still dropping 140.94.",
+      "tone": "sarcastic"
+    },
+    {
+      "speaker": "Analytical Guru",
+      "text": "Let us lock in the playoff picture across this twelve-team, six-spot gauntlet. K9 KenBoned towers alone at 11 and 0 with 1494.2 points for, over three hundred points ahead of second-place Boutte Warriors at 8 and 3 and third-place Drake it til you make it at 7 and 4.",
+      "tone": "analytical"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "text": "The real panic lives on the playoff bubble! Fifth-place jordanzfinci clings to 6 and 5 with 1099.2 points after gutting his backfield. Sixth-place ItsOurYear and seventh-place andyehlert sit tied at 5 and 6, though ItsOurYear swamps andyehlert's 962.1 points, while eighth-place Pretty Pattys lurks at 4 and 7 with 942.1.",
+      "tone": "dramatic"
+    },
+    {
+      "speaker": "Comedian",
+      "text": "[laughs] And down in twelfth place, two and nine StevenStrybos with 789.3 points is sprinting toward the Sacko trophy like his trousers caught fire! Start Fernando Mendoza, quit praying for two-point running backs, and maybe keep a fire extinguisher next to your lineup screen this Sunday.",
+      "tone": "funny"
+    },
+    {
+      "speaker": "Beat Reporter",
+      "text": "That puts a bow on our Week 11 Playoff Bubble Panic and Fraud Exposure Special for Don't you want a fanta fanta fantasy league! For Johnny Two-Screens and Spencer Dr. Metric Vance, I am Scoop Sullivan. Stop making 33 panic adds, set your starters, and see you Week 12!",
+      "tone": "excited"
+    }
+  ],
+  "acts": [
+    {
+      "act": "Act I: Cold Open & Headline Chaos",
+      "startIndex": 0,
+      "segmentCount": 5,
+      "estimatedMinutes": 1.6
+    },
+    {
+      "act": "Act II: Marquee Massacre & Cardiac Thriller",
+      "startIndex": 5,
+      "segmentCount": 6,
+      "estimatedMinutes": 1.9
+    },
+    {
+      "act": "Act III: Around the League Matchup Blitz",
+      "startIndex": 11,
+      "segmentCount": 7,
+      "estimatedMinutes": 2.2
+    },
+    {
+      "act": "Act IV: Bench Crimes & Fraud Watch",
+      "startIndex": 18,
+      "segmentCount": 5,
+      "estimatedMinutes": 1.6
+    },
+    {
+      "act": "Act V: Transaction Wire & Trade Police",
+      "startIndex": 23,
+      "segmentCount": 5,
+      "estimatedMinutes": 1.6
+    },
+    {
+      "act": "Act VI: Playoff Panic & Sign-Off",
+      "startIndex": 28,
+      "segmentCount": 4,
+      "estimatedMinutes": 1.3
+    }
+  ],
+  "wordCount": 1481,
+  "estimatedDurationMinutes": 10.2,
+  "generatedAt": "2026-11-27T06:05:57.485Z",
+  "isFallback": false,
+  "isMock": false,
+  "audioUrl": "/podcasts/episode-1313895546825490432-week-11.mp3",
+  "audioProvider": "elevenlabs"
+}

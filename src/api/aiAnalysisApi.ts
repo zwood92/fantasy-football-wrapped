@@ -1,11 +1,34 @@
-export interface PodcastSpeakerSegment {
-  speaker: "Analytical Guru" | "Comedian" | "Beat Reporter" | string;
-  role?: string;
-  avatar?: string;
-  text: string;
-  tone?: "analytical" | "funny" | "breaking" | "dramatic" | "sarcastic" | "excited";
-  topic?: string;
-}
+import { getPlayersByIdsMap } from "./api";
+import {
+  DEFAULT_PODCAST_PERSONAS,
+  EXCLUSIVE_PODCAST_LEAGUE_ID,
+  EXCLUSIVE_PODCAST_LEAGUE_NAME,
+  generateStudioPodcastEpisode,
+  PODCAST_CAST_PROFILES,
+  PODCAST_SHOW_PRESETS,
+  type PlayerLookupRecord,
+  type PodcastActSummary,
+  type PodcastDialogueSegment,
+  type PodcastHostId,
+  type PodcastHostProfile,
+  type PodcastPersonas,
+  type PodcastShowPreset,
+} from "@/lib/podcastEngine";
+
+export {
+  DEFAULT_PODCAST_PERSONAS,
+  EXCLUSIVE_PODCAST_LEAGUE_ID,
+  EXCLUSIVE_PODCAST_LEAGUE_NAME,
+  PODCAST_CAST_PROFILES,
+  PODCAST_SHOW_PRESETS,
+  type PodcastActSummary,
+  type PodcastHostId,
+  type PodcastHostProfile,
+  type PodcastPersonas,
+  type PodcastShowPreset,
+};
+
+export type PodcastSpeakerSegment = PodcastDialogueSegment;
 
 export interface PodcastEpisode {
   title: string;
@@ -16,14 +39,23 @@ export interface PodcastEpisode {
   highlights: string[];
   segments: PodcastSpeakerSegment[];
   script: Array<{ speaker: string; text: string; tone?: string }>;
+  acts?: PodcastActSummary[];
+  wordCount?: number;
+  estimatedDurationMinutes?: number;
+  audioUrl?: string;
+  audioProvider?: "elevenlabs" | "browser";
   generatedAt: string;
   isMock?: boolean;
+  isFallback?: boolean;
 }
 
-export interface PodcastPersonas {
-  guru: string;
-  comedian: string;
-  reporter: string;
+export interface ElevenLabsVoiceOption {
+  voiceId: string;
+  name: string;
+  category: string;
+  accent?: string;
+  description?: string;
+  previewUrl?: string;
 }
 
 export interface TradeSide {
@@ -147,15 +179,177 @@ export interface NewsletterArticle {
   hotWaiverPicks: string[];
 }
 
-// Default Personas
-export const DEFAULT_PODCAST_PERSONAS: PodcastPersonas = {
-  guru: "A stat-obsessed football nerd who analyzes expected points, air yards, target shares, and game theory.",
-  comedian: "A ruthless sports radio comedian who brings brutal trash talk, roasts bad decisions, and mocks blowout losers.",
-  reporter: "An in-season insider breaking locker room drama, injury updates, and waiver wire whispers.",
-};
+async function hydratePodcastPlayerMap(
+  leagueInfo: any,
+  weekNum: number
+): Promise<PlayerLookupRecord | undefined> {
+  if (!leagueInfo) return undefined;
+  const ids = new Set<string>();
+  const weekIdx = Math.max(0, weekNum - 1);
+
+  if (Array.isArray(leagueInfo.weeklyPoints)) {
+    for (const wp of leagueInfo.weeklyPoints) {
+      for (const id of wp.starters?.[weekIdx] ?? []) {
+        if (id && id !== "0") ids.add(String(id));
+      }
+      for (const id of wp.benchPlayers?.[weekIdx] ?? []) {
+        if (id && id !== "0") ids.add(String(id));
+      }
+    }
+  }
+  if (Array.isArray(leagueInfo.waivers)) {
+    for (const w of leagueInfo.waivers) {
+      if (Math.abs((w.leg ?? 0) - weekNum) <= 2) {
+        for (const id of Object.keys(w.adds ?? {})) ids.add(id);
+        for (const id of Object.keys(w.drops ?? {})) ids.add(id);
+      }
+    }
+  }
+  if (Array.isArray(leagueInfo.trades)) {
+    for (const t of leagueInfo.trades.slice(0, 5)) {
+      for (const id of Object.keys(t.adds ?? {})) ids.add(id);
+    }
+  }
+
+  if (ids.size === 0) return undefined;
+  try {
+    const map = await getPlayersByIdsMap(Array.from(ids));
+    const record: PlayerLookupRecord = {};
+    map.forEach((val, key) => {
+      record[key] = {
+        name: val.name,
+        position: val.position,
+        team: val.team,
+      };
+    });
+    return Object.keys(record).length > 0 ? record : undefined;
+  } catch {
+    return undefined;
+  }
+}
 
 /**
- * Call the backend /api/podcast endpoint with fallback
+ * Stage 2: Send (speaker, line) script to /api/podcast-audio for ElevenLabs synthesis
+ */
+export async function synthesizePodcastAudio(params: {
+  segments?: PodcastSpeakerSegment[];
+  script?: Array<{ speaker: string; text: string; tone?: string }>;
+  personas?: Partial<PodcastPersonas>;
+  leagueId?: string;
+  week?: number;
+  episodeMeta?: PodcastEpisode;
+}): Promise<{
+  audioUrl: string | null;
+  configured: boolean;
+  error?: string;
+}> {
+  try {
+    const response = await fetch("/api/podcast-audio", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        segments: params.segments,
+        script: params.script,
+        personas: params.personas,
+        leagueId: params.leagueId,
+        week: params.week,
+        episodeMeta: params.episodeMeta,
+      }),
+    });
+
+    if (response.status === 503) {
+      const payload = await response.json().catch(() => ({}));
+      return {
+        audioUrl: null,
+        configured: false,
+        error: payload.error || "ElevenLabs API key not configured",
+      };
+    }
+
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({}));
+      return {
+        audioUrl: null,
+        configured: true,
+        error: payload.error || `Audio synthesis failed (${response.status})`,
+      };
+    }
+
+    const blob = await response.blob();
+    if (
+      blob.size === 0 ||
+      typeof URL === "undefined" ||
+      typeof URL.createObjectURL !== "function"
+    ) {
+      return { audioUrl: null, configured: true };
+    }
+    return {
+      audioUrl: URL.createObjectURL(blob),
+      configured: true,
+    };
+  } catch (err) {
+    return {
+      audioUrl: null,
+      configured: false,
+      error: err instanceof Error ? err.message : "Network error",
+    };
+  }
+}
+
+export async function fetchCachedPodcastEpisode(params?: {
+  leagueId?: string;
+  week?: number;
+}): Promise<PodcastEpisode | null> {
+  try {
+    const qs = new URLSearchParams();
+    qs.set("leagueId", EXCLUSIVE_PODCAST_LEAGUE_ID);
+    if (params?.week) qs.set("week", String(params.week));
+    const url = `/api/podcast-latest?${qs.toString()}`;
+    const response = await fetch(url);
+    if (!response.ok) return null;
+    const data = await response.json();
+    if (data?.found && data.episode) {
+      return data.episode as PodcastEpisode;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export async function fetchCachedPodcastVault(): Promise<PodcastEpisode[]> {
+  try {
+    const response = await fetch(
+      `/api/podcast-latest?leagueId=${EXCLUSIVE_PODCAST_LEAGUE_ID}`
+    );
+    if (!response.ok) return [];
+    const data = await response.json();
+    return Array.isArray(data?.episodes) ? data.episodes : [];
+  } catch {
+    return [];
+  }
+}
+
+export async function fetchElevenLabsVoices(): Promise<{
+  configured: boolean;
+  voices: ElevenLabsVoiceOption[];
+  error?: string;
+}> {
+  try {
+    const response = await fetch("/api/podcast-voices");
+    if (!response.ok) {
+      return { configured: false, voices: [] };
+    }
+    return await response.json();
+  } catch {
+    return { configured: false, voices: [] };
+  }
+}
+
+/**
+ * Stage 1 -> Stage 2 Pipeline:
+ * 1) Generate unfiltered 8-10 min script via /api/podcast (Gemini 4)
+ * 2) Optionally synthesize multi-speaker voice audio via /api/podcast-audio (ElevenLabs)
  */
 export async function generatePodcastEpisode(params: {
   leagueInfo?: any;
@@ -163,11 +357,24 @@ export async function generatePodcastEpisode(params: {
   personas?: Partial<PodcastPersonas>;
   week?: number;
   topic?: string;
+  synthesizeAudio?: boolean;
 }): Promise<PodcastEpisode> {
   const mergedPersonas: PodcastPersonas = {
     ...DEFAULT_PODCAST_PERSONAS,
     ...(params.personas || {}),
   };
+  const targetWeek =
+    params.week ||
+    params.leagueInfo?.lastScoredWeek ||
+    params.leagueInfo?.currentWeek ||
+    10;
+
+  const playerMap = await hydratePodcastPlayerMap(
+    params.leagueInfo,
+    targetWeek
+  );
+
+  let episode: PodcastEpisode | null = null;
 
   try {
     const response = await fetch("/api/podcast", {
@@ -179,132 +386,74 @@ export async function generatePodcastEpisode(params: {
         leagueInfo: params.leagueInfo,
         matchups: params.matchups,
         personas: mergedPersonas,
-        week: params.week,
+        week: targetWeek,
         topic: params.topic,
+        playerMap,
       }),
     });
 
     if (response.ok) {
       const data = await response.json();
       if (data && Array.isArray(data.segments)) {
-        return data as PodcastEpisode;
+        episode = data as PodcastEpisode;
       }
     }
   } catch (err) {
-    console.warn("API podcast call failed or offline, generating client-side fallback:", err);
+    console.warn(
+      "API podcast call failed or offline, generating client-side fallback:",
+      err
+    );
   }
 
-  // Client-side fallback generator
-  return createClientFallbackPodcast(params.leagueInfo, params.matchups, mergedPersonas, params.week);
+  if (!episode) {
+    episode = createClientFallbackPodcast(
+      params.leagueInfo,
+      params.matchups,
+      mergedPersonas,
+      targetWeek,
+      playerMap,
+      params.topic
+    );
+  }
+
+  if (params.synthesizeAudio) {
+    const audioResult = await synthesizePodcastAudio({
+      segments: episode.segments,
+      script: episode.script,
+      personas: mergedPersonas,
+      leagueId: EXCLUSIVE_PODCAST_LEAGUE_ID,
+      week: episode.week || targetWeek,
+      episodeMeta: episode,
+    });
+    if (audioResult.audioUrl) {
+      episode.audioUrl = audioResult.audioUrl;
+      episode.audioProvider = "elevenlabs";
+    }
+  }
+
+  return episode;
 }
 
 /**
- * Client-side fallback podcast generator
+ * Client-side 6-act 8-10 minute studio podcast generator grounded in real league data
  */
 export function createClientFallbackPodcast(
   leagueInfo?: any,
   matchupsData?: any,
   personas?: Partial<PodcastPersonas>,
-  weekNum?: number
+  weekNum?: number,
+  playerMap?: PlayerLookupRecord,
+  topic?: string
 ): PodcastEpisode {
-  const leagueName = leagueInfo?.name || "The League";
-  const week = weekNum || leagueInfo?.currentWeek || leagueInfo?.lastScoredWeek || 10;
-
-  let teamHigh = "Touchdown Titans";
-  let scoreHigh = 148.6;
-  let teamLow = "Waiver Wire Wonders";
-  let scoreLow = 79.4;
-  let closeTeamA = "Gridiron Gladiators";
-  let closeTeamB = "Redzone Renegades";
-  let closeMargin = 1.8;
-
-  if (Array.isArray(matchupsData) && matchupsData.length > 0) {
-    const validScores: Array<{ name: string; score: number }> = [];
-    for (const m of matchupsData) {
-      if (m.team1 && m.score1 !== undefined) {
-        validScores.push({ name: String(m.team1.name || m.team1), score: Number(m.score1) });
-      }
-      if (m.team2 && m.score2 !== undefined) {
-        validScores.push({ name: String(m.team2.name || m.team2), score: Number(m.score2) });
-      }
-    }
-    if (validScores.length >= 2) {
-      validScores.sort((a, b) => b.score - a.score);
-      teamHigh = validScores[0].name;
-      scoreHigh = validScores[0].score;
-      teamLow = validScores[validScores.length - 1].name;
-      scoreLow = validScores[validScores.length - 1].score;
-    }
-  }
-
-  const segments: PodcastSpeakerSegment[] = [
-    {
-      speaker: "Beat Reporter",
-      role: "Breaking News",
-      avatar: "/avatars/avatar3.svg",
-      tone: "breaking",
-      topic: "Show Kickoff",
-      text: `We are LIVE on the airwaves for Week ${week} of ${leagueName}! The trade deadline is looming, tempers in the league chat are at an all-time high, and we have breaking injury updates impacting playoff seeding.`,
-    },
-    {
-      speaker: "Analytical Guru",
-      role: "Expected Points & Sabermetrics",
-      avatar: "/avatars/avatar1.svg",
-      tone: "analytical",
-      topic: "Star of the Week",
-      text: `Let's break down ${teamHigh}'s dominant week with ${scoreHigh.toFixed(1)} points. Their expected points model had them at a 94.2% win probability by halftime of the afternoon slate. When your starting flex puts up 24+ points, mathematical variance tilts heavily in your favor.`,
-    },
-    {
-      speaker: "Comedian",
-      role: "Savage Roasts & Hot Takes",
-      avatar: "/avatars/avatar2.svg",
-      tone: "sarcastic",
-      topic: "The Sacko Watch",
-      text: `Okay, Dr. Calculator, let's talk about the real comedy show: ${teamLow} putting up ${scoreLow.toFixed(1)} total points. I haven't seen an offensive display that embarrassing since my high school JV team played in a blizzard! Someone check their manager's pulse!`,
-    },
-    {
-      speaker: "Beat Reporter",
-      role: "Breaking News",
-      avatar: "/avatars/avatar3.svg",
-      tone: "dramatic",
-      topic: "Nailbiter Drama",
-      text: `Sources confirm ${closeTeamA} and ${closeTeamB} came down to the final 2 minutes on Monday night. That ${closeMargin.toFixed(1)}-point difference had the entire league chat glued to stat-correction updates until 3 AM!`,
-    },
-    {
-      speaker: "Analytical Guru",
-      role: "Expected Points & Sabermetrics",
-      avatar: "/avatars/avatar1.svg",
-      tone: "analytical",
-      topic: "Playoff Odds",
-      text: `Looking at our 10,000-iteration Monte Carlo projections, the margin for error is razor-thin. Teams with 6 wins have an 81% playoff lock, while 5-win teams are in a statistical coin-flip.`,
-    },
-    {
-      speaker: "Comedian",
-      role: "Savage Roasts & Hot Takes",
-      avatar: "/avatars/avatar2.svg",
-      tone: "excited",
-      topic: "Closing Roast",
-      text: `Bottom line: Set your alarms, pray to the fantasy gods, and stop benching your studs because you read a hunch on Reddit! We'll see you next week on ${leagueName} Radio!`,
-    },
-  ];
-
-  return {
-    title: `Week ${week} Radio Show: Chaos, Clowns & Championship Clues`,
-    subtitle: `The Guru calculates win leverage while Johnny roasts the basement dwellers.`,
-    week,
-    leagueName,
-    summary: `Week ${week} brought wild swings in ${leagueName}. ${teamHigh} posted a week-high ${scoreHigh.toFixed(1)}, while ${teamLow} stumbled into the Sacko danger zone.`,
-    highlights: [
-      `${teamHigh} tops the leaderboard with ${scoreHigh.toFixed(1)} pts`,
-      `Monday Night thriller decided by ${closeMargin.toFixed(1)} pts`,
-      `${teamLow} gets put on blast after scoring only ${scoreLow.toFixed(1)} pts`,
-      "Playoff bubble leverage indices analyzed",
-    ],
-    segments,
-    script: segments.map((s) => ({ speaker: s.speaker, text: s.text, tone: s.tone })),
-    generatedAt: new Date().toISOString(),
+  return generateStudioPodcastEpisode({
+    leagueInfo,
+    matchupsData,
+    personas,
+    week: weekNum,
+    topic,
+    playerMap,
     isMock: true,
-  };
+  });
 }
 
 /**

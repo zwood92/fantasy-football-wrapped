@@ -4,15 +4,10 @@ import { useStore } from "@/store/store";
 import { toast } from "vue-sonner";
 import {
   Radio,
-  Sparkles,
   Mic,
   Settings2,
   Calendar,
   History,
-  Trophy,
-  Flame,
-  LineChart,
-  Newspaper,
   Layers,
   ChevronDown,
   ChevronUp,
@@ -20,10 +15,14 @@ import {
 } from "@lucide/vue";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import PersonaCustomizer from "@/components/podcast/PersonaCustomizer.vue";
 import AiNarrativeCard from "@/components/shared/AiNarrativeCard.vue";
 import {
+  EXCLUSIVE_PODCAST_LEAGUE_ID,
+  EXCLUSIVE_PODCAST_LEAGUE_NAME,
+  fetchCachedPodcastEpisode,
+  fetchCachedPodcastVault,
   generatePodcastEpisode,
   DEFAULT_PODCAST_PERSONAS,
   type PodcastEpisode,
@@ -55,7 +54,18 @@ const currentEpisode = ref<PodcastEpisode | null>(null);
 const episodeHistory = ref<PodcastEpisode[]>([]);
 const isHistoryLoading = ref(false);
 
-const activeLeague = computed(() => store.currentLeague || store.leagueInfo[0] || null);
+const activeLeague = computed(
+  () =>
+    store.leagueInfo.find((l) => l.leagueId === EXCLUSIVE_PODCAST_LEAGUE_ID) || {
+      leagueId: EXCLUSIVE_PODCAST_LEAGUE_ID,
+      name: EXCLUSIVE_PODCAST_LEAGUE_NAME,
+      season: "2026",
+      regularSeasonLength: 14,
+      lastScoredWeek: 11,
+      currentWeek: 11,
+      weeklyPoints: [],
+    }
+);
 
 // Available weeks based on league data
 const availableWeeks = computed(() => {
@@ -137,22 +147,35 @@ onMounted(async () => {
     }
   }
 
-  // If no episode exists, generate initial sample episode
+  // Load exclusive Fanta League episodes from server cache (purge any legacy non-Fanta localStorage items)
+  episodeHistory.value = episodeHistory.value.filter(
+    (e) => e.leagueName === EXCLUSIVE_PODCAST_LEAGUE_NAME
+  );
+
+  const [serverCached, vault] = await Promise.all([
+    fetchCachedPodcastEpisode({ leagueId: EXCLUSIVE_PODCAST_LEAGUE_ID }),
+    fetchCachedPodcastVault(),
+  ]);
+  if (vault.length > 0) {
+    episodeHistory.value = vault;
+  }
+  if (serverCached) {
+    currentEpisode.value = serverCached;
+    selectedWeek.value = serverCached.week || selectedWeek.value;
+    return;
+  }
+
+  // If no episode exists, generate initial episode for Fanta league
   if (!currentEpisode.value) {
     generateEpisode();
   }
 });
 
-const savePersonas = () => {
+const handleSavePersonas = (updated: PodcastPersonas) => {
+  personas.value = { ...updated };
   localStorage.setItem("ffw_podcast_personas", JSON.stringify(personas.value));
   toast.success("AI host personas saved!");
   showPersonaSettings.value = false;
-};
-
-const resetPersonas = () => {
-  personas.value = { ...DEFAULT_PODCAST_PERSONAS };
-  localStorage.removeItem("ffw_podcast_personas");
-  toast.info("Personas reset to studio defaults.");
 };
 
 const generateEpisode = async () => {
@@ -166,6 +189,7 @@ const generateEpisode = async () => {
       personas: personas.value,
       week: selectedWeek.value,
       topic: selectedTopic.value,
+      synthesizeAudio: true,
     });
 
     currentEpisode.value = episode;
@@ -299,61 +323,11 @@ const selectHistoricalEpisode = (ep: PodcastEpisode) => {
       </div>
 
       <!-- Persona Customizer Drawer -->
-      <div v-if="showPersonaSettings" class="pt-4 mt-4 border-t border-border/60 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-sm font-bold text-foreground">Configure Host Personalities</h3>
-            <p class="text-xs text-muted-foreground">Customize instructions and tone for each sports talk personality.</p>
-          </div>
-          <Button @click="resetPersonas" variant="ghost" size="sm" class="text-xs text-muted-foreground h-8">
-            <RotateCcw class="w-3 h-3 mr-1" /> Reset Defaults
-          </Button>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <!-- Analytical Guru -->
-          <div class="p-4 rounded-xl border border-sky-500/30 bg-sky-500/5 space-y-2">
-            <div class="flex items-center gap-2">
-              <img src="/avatars/avatar1.svg" class="w-7 h-7 rounded-full border border-sky-500/40" />
-              <div>
-                <div class="text-xs font-bold text-sky-500">Dr. Metric</div>
-                <div class="text-[10px] text-muted-foreground uppercase font-semibold">Analytical Guru</div>
-              </div>
-            </div>
-            <Input v-model="personas.guru" class="text-xs bg-background" />
-          </div>
-
-          <!-- Comedian -->
-          <div class="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 space-y-2">
-            <div class="flex items-center gap-2">
-              <img src="/avatars/avatar2.svg" class="w-7 h-7 rounded-full border border-amber-500/40" />
-              <div>
-                <div class="text-xs font-bold text-amber-500">Johnny Trash-Talk</div>
-                <div class="text-[10px] text-muted-foreground uppercase font-semibold">The Comedian</div>
-              </div>
-            </div>
-            <Input v-model="personas.comedian" class="text-xs bg-background" />
-          </div>
-
-          <!-- Beat Reporter -->
-          <div class="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-2">
-            <div class="flex items-center gap-2">
-              <img src="/avatars/avatar3.svg" class="w-7 h-7 rounded-full border border-emerald-500/40" />
-              <div>
-                <div class="text-xs font-bold text-emerald-500">Scoop Sullivan</div>
-                <div class="text-[10px] text-muted-foreground uppercase font-semibold">Beat Reporter</div>
-              </div>
-            </div>
-            <Input v-model="personas.reporter" class="text-xs bg-background" />
-          </div>
-        </div>
-
-        <div class="flex justify-end">
-          <Button @click="savePersonas" size="sm" class="rounded-lg text-xs font-bold">
-            Save Persona Directives
-          </Button>
-        </div>
-      </div>
+      <PersonaCustomizer
+        v-if="showPersonaSettings"
+        :initialPersonas="personas"
+        @save="handleSavePersonas"
+      />
     </div>
 
     <!-- Active Episode Broadcast Card -->
@@ -365,7 +339,7 @@ const selectHistoricalEpisode = (ep: PodcastEpisode) => {
         <div class="space-y-1">
           <h3 class="text-xl font-bold text-foreground">Hosts In The Studio...</h3>
           <p class="text-sm text-muted-foreground max-w-md mx-auto">
-            Dr. Metric is calculating win leverage, Johnny is writing roasts, and Scoop is verifying injury reports.
+            Dr. Metric is calculating win leverage, Johnny is writing roasts, and Scoop is verifying waiver & trade receipts.
           </p>
         </div>
       </div>
@@ -376,6 +350,11 @@ const selectHistoricalEpisode = (ep: PodcastEpisode) => {
           :subtitle="currentEpisode.subtitle"
           :badge-text="`Week ${currentEpisode.week} Broadcast`"
           :lines="currentEpisode.segments"
+          :acts="currentEpisode.acts"
+          :word-count="currentEpisode.wordCount"
+          :estimated-duration-minutes="currentEpisode.estimatedDurationMinutes"
+          :audio-url="currentEpisode.audioUrl"
+          :personas="personas"
           :summary="currentEpisode.summary"
           :highlights="currentEpisode.highlights"
           :is-mock="currentEpisode.isMock"

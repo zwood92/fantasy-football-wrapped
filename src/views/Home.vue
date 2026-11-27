@@ -45,9 +45,10 @@ import {
   type DemoLeagueFixtures,
 } from "@/data/demo/loaders";
 import { getLeagueFeatureDestinationTab } from "@/lib/leagueFeatureDestination";
+import { getFeatureFromViewSlug } from "@/lib/features";
 
-const Table = defineAsyncComponent(
-  () => import("../components/standings/Table.vue")
+const LeagueWorkspace = defineAsyncComponent(
+  () => import("../components/layout/LeagueWorkspace.vue")
 );
 
 const route = useRoute();
@@ -136,11 +137,13 @@ const initializeHome = async () => {
   const routeSource = Array.isArray(routeSnapshot.query.source)
     ? routeSnapshot.query.source[0]
     : routeSnapshot.query.source;
-  const requestedDestinationTab = getLeagueFeatureDestinationTab(
-    routeSnapshot.query.destination
-  );
+  const requestedViewTab = getFeatureFromViewSlug(routeSnapshot.query.view);
+  const requestedDestinationTab =
+    requestedViewTab ??
+    getLeagueFeatureDestinationTab(routeSnapshot.query.destination);
   const openRequestedDestination = () => {
-    if (!requestedDestinationTab || !store.currentLeagueId) return false;
+    if (!requestedDestinationTab) return false;
+    if (!requestedViewTab && !store.currentLeagueId) return false;
     store.currentTab = requestedDestinationTab;
     localStorage.setItem("currentTab", requestedDestinationTab);
     return true;
@@ -374,7 +377,7 @@ const checkSystemTheme = () => {
               store.currentLeague && !store.loadingUserLeagues
             "
           >
-            <Table
+            <LeagueWorkspace
               :users="store.currentLeague.users"
               :rosters="store.currentLeague.rosters"
               :points="store.currentLeague.weeklyPoints"
@@ -389,7 +392,7 @@ const checkSystemTheme = () => {
           v-else
           :class="store.currentTab === 'Home' ? '' : 'container mx-auto'"
         >
-          <Table
+          <LeagueWorkspace
             v-if="demoLeague"
             :users="demoLeague.fakeUsers"
             :rosters="demoLeague.fakeRosters"
